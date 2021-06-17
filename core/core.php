@@ -4,22 +4,10 @@ ini_set('display_errors',1);
 
 function getConexion(){
 
-	$strDireccionServer = $_SERVER["SERVER_ADDR"] ;
-
-	if( $strDireccionServer == "184.107.72.232" ){
-		
-		$servername = "localhost";
-		$username = "micoopeg";
-	    $password = "uByFp0XCJUwC";
-		$dbname = "micoopeg_inventarioit";
-	}else{
-		$servername = "localhost:3307";
-		$username = "root";
-		$password = "";
-		$dbname = "micoopeg_inventarioit";
-	}
-    
-
+    $servername = "localhost:3307";
+    $username = "root";
+    $password = "";
+    $dbname = "micoopeg_inventarioit";
 	$conn = mysqli_connect($servername, $username, $password, $dbname);
 	if (!$conn) {
 	    die("Connection failed: " . mysqli_connect_error());
