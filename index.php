@@ -75,7 +75,7 @@ class login_view{
         <!-- iCheck -->
         <link rel="stylesheet" href="plugins/iCheck/square/blue.css">
         <!-- Google Font: Source Sans Pro -->
-        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+        <link href="dist/css/fontgoogleapiscss.css" rel="stylesheet">
         </head>
         <body class="hold-transition login-page">
         <div class="login-box">

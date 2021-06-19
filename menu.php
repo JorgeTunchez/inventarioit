@@ -100,7 +100,7 @@ class menu_view{
             <!-- Theme style -->
             <link rel="stylesheet" href="dist/css/adminlte.min.css">
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-            <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+            <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"><link rel="stylesheet" href="dist/css/font-awesome.min.css">
             <!-- iCheck -->
             <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
             <!-- Morris chart -->
@@ -114,7 +114,7 @@ class menu_view{
             <!-- bootstrap wysihtml5 - text editor -->
             <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
             <!-- Google Font: Source Sans Pro -->
-            <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+            <link href="dist/css/fontgoogleapiscss.css" rel="stylesheet">
             <style>
                 .centrar{
                     position: absolute;
@@ -244,17 +244,16 @@ class menu_view{
                 <div class="col-lg-3 col-6">
                     <!-- small box -->
                     <div class="small-box bg-info">
-                    <div class="inner">
-                        <?php 
-                        $intConteoExpedientes = $this->objModel->getConteoExpedientes();
-                        ?>
-                        <h3><?php print $intConteoExpedientes;?></h3>
-
-                        <p>Expedientes Registrados</p>
-                    </div>
-                    <div class="icon">
-                        <i class="ion ion-bag"></i>
-                    </div>
+                        <div class="inner">
+                            <?php 
+                            $intConteoExpedientes = $this->objModel->getConteoExpedientes();
+                            ?>
+                            <h3><?php print $intConteoExpedientes;?></h3>
+                            <p>Expedientes Registrados</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
                     </div>
                 </div>
                 <!-- ./col -->

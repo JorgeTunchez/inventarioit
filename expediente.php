@@ -881,13 +881,7 @@ class expediente_view{
     }
 
     public function drawContentExpediente($intColaborador = 0){
-        $arrColaborador = $this->objModel->getInfoColaborador($intColaborador);
-        /*
-        print "<pre>";
-        print_r($arrColaborador);
-        print "</pre>";
-        */
-  
+        $arrColaborador = $this->objModel->getInfoColaborador($intColaborador);  
         if( count($arrColaborador)>0 ){
             reset($arrColaborador);
             while( $rTMP = each($arrColaborador) ){
@@ -1421,7 +1415,7 @@ class expediente_view{
             <!-- bootstrap wysihtml5 - text editor -->
             <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
             <!-- Google Font: Source Sans Pro -->
-            <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+            <link href="dist/css/fontgoogleapiscss.css" rel="stylesheet">
             <style>
                 .centrar{
                     position: absolute;
