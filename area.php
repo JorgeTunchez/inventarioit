@@ -316,8 +316,10 @@ class area_view{
                                                 <input class="form-control" type="text" id="txtNombre_<?php print $intID;?>" name="txtNombre_<?php print $intID;?>" value="<?php print $strNombre;?>">
                                             </div>
                                             </td>
-                                            <td style="text-align:center;"><button class="btn btn-info btn-block" onclick="editArea('<?php print $intID;?>')">Editar</button></td>
-                                            <td style="text-align:center;"><button class="btn btn-danger btn-block" onclick="deleteArea('<?php print $intID;?>')">Eliminar</button></td>
+                                            <td style="text-align:center;">
+                                                <button class="btn btn-info btn-block" onclick="editArea('<?php print $intID;?>')"><i class="fa fa-pencil"></i> Editar</button>
+                                                <button class="btn btn-danger btn-block" onclick="deleteArea('<?php print $intID;?>')"><i class="fa fa-trash"></i> Eliminar</button>
+                                            </td>
                                         </tr>
                                         <?php
                                     }
@@ -326,8 +328,12 @@ class area_view{
                                     </table>
                                     <table class="table table-sm table-hover table-condensed">
                                         <tr>
-                                            <td style="text-align:center;"><button class="btn btn-primary btn-block" onclick="agregarArea()"><i class="fa fa-plus"> Agregar</i></button></td>
-                                            <td style="text-align:center;"><button type="button" class="btn btn-success btn-block" onclick="checkForm()"><i class="fa fa-floppy-o"> Guardar</i></button></td>
+                                            <td style="text-align:center;">
+                                                <button class="btn btn-primary btn-block" onclick="agregarArea()"><i class="fa fa-plus"></i> Agregar</button>
+                                            </td>
+                                            <td style="text-align:center;">
+                                                <button type="button" class="btn btn-success btn-block" onclick="checkForm()"><i class="fa fa-floppy-o"></i> Guardar</button>
+                                            </td>
                                         </tr>
                                     </table>
                                     </div>
@@ -475,33 +481,36 @@ class area_view{
             }
 
             function checkForm(){
-                var boolError = false;
-                $("input[name*='txtNombre_']").each(function(){
-                    if( $(this).val() == '' || arrAreas.includes($(this).val()) ){
-                        $(this).css('background-color','#f4d0de');
-                        boolError = true;
-                    }else{
-                        $(this).css('background-color','');
-                    }   
-                });
-
-                if( boolError == false ){
-                    var objSerialized = $("#tblAreas").find("select, input").serialize();
-                    $.ajax({
-                        url:"area.php",
-                        data: objSerialized,
-                        type:"POST",
-                        beforeSend: function() {
-                            $("#divShowLoadingGeneralBig").show();
-                        },
-                        success:function(data){
-                            $("#divShowLoadingGeneralBig").hide();
-                            location.href = "area.php"; 
-                        }
+                var response = confirm("Desea confirmar los cambios?");
+                if (response == true) {
+                    var boolError = false;
+                    $("input[name*='txtNombre_']").each(function(){
+                        if( $(this).val() == '' || arrAreas.includes($(this).val()) ){
+                            $(this).css('background-color','#f4d0de');
+                            boolError = true;
+                        }else{
+                            $(this).css('background-color','');
+                        }   
                     });
-                }else{
-                    alert('Faltan campos por llenar o revisar que no existan campos duplicados');
-                }
+
+                    if( boolError == false ){
+                        var objSerialized = $("#tblAreas").find("select, input").serialize();
+                        $.ajax({
+                            url:"area.php",
+                            data: objSerialized,
+                            type:"POST",
+                            beforeSend: function() {
+                                $("#divShowLoadingGeneralBig").show();
+                            },
+                            success:function(data){
+                                $("#divShowLoadingGeneralBig").hide();
+                                location.href = "area.php"; 
+                            }
+                        });
+                    }else{
+                        alert('Faltan campos por llenar o revisar que no existan campos duplicados');
+                    }
+                }  
             }
 
 

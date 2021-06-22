@@ -314,8 +314,10 @@ class categoria_view{
                                                 <input class="form-control" type="text" id="txtNombre_<?php print $intID;?>" name="txtNombre_<?php print $intID;?>" value="<?php print $strNombre;?>">
                                             </div>
                                             </td>
-                                            <td style="text-align:center;"><button class="btn btn-info btn-block" onclick="editCategoria('<?php print $intID;?>')">Editar</button></td>
-                                            <td style="text-align:center;"><button class="btn btn-danger btn-block" onclick="deleteCategoria('<?php print $intID;?>')">Eliminar</button></td>
+                                            <td style="text-align:center;">
+                                                <button class="btn btn-info btn-block" onclick="editCategoria('<?php print $intID;?>')"><i class="fa fa-pencil"></i> Editar</button>
+                                                <button class="btn btn-danger btn-block" onclick="deleteCategoria('<?php print $intID;?>')"><i class="fa fa-trash"></i> Eliminar</button>
+                                            </td>
                                         </tr>
                                         <?php
                                     }
@@ -324,8 +326,12 @@ class categoria_view{
                                     </table>
                                     <table class="table table-sm table-hover table-condensed">
                                         <tr>
-                                            <td style="text-align:center;"><button class="btn btn-primary btn-block" onclick="agregarCategoria()"><i class="fa fa-plus"> Agregar</i></button></td>
-                                            <td style="text-align:center;"><button type="button" class="btn btn-success btn-block" onclick="checkForm()"><i class="fa fa-floppy-o"> Guardar</i></button></td>
+                                            <td style="text-align:center;">
+                                                <button class="btn btn-primary btn-block" onclick="agregarCategoria()"><i class="fa fa-plus"></i> Agregar</button>
+                                            </td>
+                                            <td style="text-align:center;">
+                                                <button type="button" class="btn btn-success btn-block" onclick="checkForm()"><i class="fa fa-floppy-o"></i> Guardar</button>
+                                            </td>
                                         </tr>
                                     </table>
                                     </div>

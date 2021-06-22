@@ -270,7 +270,7 @@ class rptstock_view{
     public function drawSelectComponenteHD(){
         $arrComponenteHD = $this->objModel->getComponenteHD();
         ?>
-        <label><h4>Seleccione un componente:</h4></label>
+        <label><h4>2. Seleccione un componente:</h4></label>
         <select id="selectComponente" name="selectComponente" style="text-align:center; width:100%;" class="form-control select2">
           <?php
           reset($arrComponenteHD);
@@ -483,7 +483,7 @@ class rptstock_view{
                                         <td data-title="No." style="text-align:center;"><h3><span class="badge badge-info"><?php print $intCount;?></span></h3></td>
                                         <td data-title="Área" style="text-align:center;"><?php print $strNombreArea; ?></td>
                                         <td data-title="Conteo" style="text-align:center;"><?php print $intConteo; ?></td>
-                                        <td data-title="Detalle" style="text-align:center;"><button class="btn btn-success" onclick="getDetail('<?php print $intArea;?>','<?php print $intComponente;?>')">Ver detalles</button></td>
+                                        <td data-title="Detalle" style="text-align:center;"><button class="btn btn-success" onclick="getDetail('<?php print $intArea;?>','<?php print $intComponente;?>')"><i class="fa fa-search"></i> Ver detalles</button></td>
                                     </tr>
                                     <?php
                                 }
@@ -691,13 +691,13 @@ class rptstock_view{
                                     </div>
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <button class="btn btn-info btn-block" onclick="getReporte()">Generar</button>
+                                            <button class="btn btn-info btn-block" onclick="getReporte()"><i class="fa fa-search"></i> Generar</button>
                                         </div>
                                     </div>
                                     <br>
                                     <div class="row"> 
                                         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <button id="btnExportarPDF" class="btn btn-info btn-block" onclick="fntExportarData('PDF')" style="display:none;">Imprimir PDF</button>
+                                            <button id="btnExportarPDF" class="btn btn-info btn-block" onclick="fntExportarData('PDF')" style="display:none;"><i class="fa fa-print"></i> Imprimir PDF</button>
                                         </div>
                                     </div>
                                 </div>

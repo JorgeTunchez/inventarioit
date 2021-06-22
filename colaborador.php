@@ -367,8 +367,10 @@ class colaborador_view{
                                 ?>
                             </div>
                         </td>
-                        <td style="text-align:center;"><button class="btn btn-info btn-block" onclick="editColaborador('<?php print $intID;?>')">Editar</button></td>
-                        <td style="text-align:center;"><button class="btn btn-danger btn-block btn-block" onclick="deleteColaborador('<?php print $intID;?>')">Eliminar</button></td>
+                        <td style="text-align:center;">
+                            <button class="btn btn-info btn-block" onclick="editColaborador('<?php print $intID;?>')"><i class="fa fa-pencil"></i> Editar</button>
+                            <button class="btn btn-danger btn-block btn-block" onclick="deleteColaborador('<?php print $intID;?>')"><i class="fa fa-trash"></i> Eliminar</button>
+                        </td>
                     </tr>
                     <?php
                 }
@@ -377,8 +379,8 @@ class colaborador_view{
             </table>
             <table class="table table-sm table-hover table-condensed">
                 <tr>
-                    <td style="text-align:center;"><button class="btn btn-success btn-block" onclick="agregarColaborador()"><i class="fa fa-plus"> Agregar</i></button></td>
-                    <td style="text-align:center;"><button type="button" class="btn btn-success btn-block" onclick="checkForm()"><i class="fa fa-floppy-o"> Guardar</i></button></td>
+                    <td style="text-align:center;"><button class="btn btn-success btn-block" onclick="agregarColaborador()"><i class="fa fa-plus"></i> Agregar</button></td>
+                    <td style="text-align:center;"><button type="button" class="btn btn-success btn-block" onclick="checkForm()"><i class="fa fa-floppy-o"></i> Guardar</button></td>
                 </tr>
             </table>
             </div>
@@ -560,7 +562,7 @@ class colaborador_view{
                                     <br>
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                            <button class="btn btn-success btn-block" onclick="searchbyarea()">Mostrar Listado</button>
+                                            <button class="btn btn-success btn-block" onclick="searchbyarea()"><i class="fa fa-search"></i> Mostrar Listado</button>
                                         </div>
                                     </div>
                                 </div>

@@ -1078,8 +1078,10 @@ class expediente_view{
                                                     <input class="form-control" type="number" id="txtHDAnio_<?php print $intID;?>" name="txtHDAnio_<?php print $intID;?>" value="<?php print $intAnioHD;?>">
                                                 </div>     
                                             </td>
-                                            <td style="text-align:center;"><button class="btn btn-secondary btn-block" onclick="editHD('<?php print $intID;?>')">Editar</button></td>
-                                            <td style="text-align:center;"><button class="btn btn-secondary btn-block" onclick="deleteHD('<?php print $intID;?>')">Eliminar</button></td>
+                                            <td style="text-align:center;">
+                                                <button class="btn btn-secondary btn-block" onclick="editHD('<?php print $intID;?>')"><i class="fa fa-pencil"></i> Editar</button>
+                                                <button class="btn btn-secondary btn-block" onclick="deleteHD('<?php print $intID;?>')"><i class="fa fa-trash"></i> Eliminar</button>
+                                            </td>
                                         </tr>
                                         <?php
                                     }
@@ -1088,7 +1090,7 @@ class expediente_view{
                                 </table>
                                 <table class="table table-sm table-hover table-condensed">
                                     <tr>
-                                        <td style="text-align:left;"><button class="btn btn-danger" onclick="agregarHD()">(+) Agregar</button></td>
+                                        <td style="text-align:left;"><button class="btn btn-danger" onclick="agregarHD()"><i class="fa fa-plus"></i> Agregar</button></td>
                                     </tr>
                                 </table>
                                 <?php    
@@ -1098,7 +1100,7 @@ class expediente_view{
                                 </table>
                                 <table class="table table-sm table-hover table-condensed">
                                     <tr>
-                                        <td style="text-align:left;"><button class="btn btn-danger" onclick="agregarHD()">(+) Agregar</button></td>
+                                        <td style="text-align:left;"><button class="btn btn-danger" onclick="agregarHD()"><i class="fa fa-plus"></i> Agregar</button></td>
                                     </tr>
                                 </table>
                                 <?php
@@ -1167,8 +1169,10 @@ class expediente_view{
                                                     <input class="form-control" type="text" id="txtPLOperador_<?php print $intID;?>" name="txtPLOperador_<?php print $intID;?>" value="<?php print $strOperadorPl;?>">
                                                 </div>     
                                             </td>
-                                            <td style="text-align:center;"><button class="btn btn-secondary btn-block" onclick="editPL('<?php print $intID;?>')">Editar</button></td>
-                                            <td style="text-align:center;"><button class="btn btn-secondary btn-block" onclick="deletePL('<?php print $intID;?>')">Eliminar</button></td>
+                                            <td style="text-align:center;">
+                                                <button class="btn btn-secondary btn-block" onclick="editPL('<?php print $intID;?>')"><i class="fa fa-pencil"></i> Editar</button>
+                                                <button class="btn btn-secondary btn-block" onclick="deletePL('<?php print $intID;?>')"><i class="fa fa-trash"></i> Eliminar</button>
+                                            </td>
                                         </tr>
                                         <?php
                                     }
@@ -1177,7 +1181,7 @@ class expediente_view{
                                 </table>
                                 <table class="table table-sm table-hover table-condensed">
                                     <tr>
-                                        <td style="text-align:left;"><button class="btn btn-primary" onclick="agregarPL()">(+) Agregar</button></td>
+                                        <td style="text-align:left;"><button class="btn btn-primary" onclick="agregarPL()"><i class="fa fa-plus"></i> Agregar</button></td>
                                     </tr>
                                 </table>
                                 <?php    
@@ -1187,7 +1191,7 @@ class expediente_view{
                                 </table>
                                 <table class="table table-sm table-hover table-condensed">
                                     <tr>
-                                        <td style="text-align:left;"><button class="btn btn-primary" onclick="agregarPL()">(+) Agregar</button></td>
+                                        <td style="text-align:left;"><button class="btn btn-primary" onclick="agregarPL()"><i class="fa fa-plus"></i> Agregar</button></td>
                                     </tr>
                                 </table>
                                 </div>
@@ -1258,8 +1262,10 @@ class expediente_view{
                                                 <input class="form-control" type="text" id="txtSWVersion_<?php print $intID;?>" name="txtSWVersion_<?php print $intID;?>" value="<?php print $strVersion;?>">
                                             </div>     
                                         </td>
-                                        <td style="text-align:center; vertical-align:middle;"><button class="btn btn-secondary btn-block" onclick="editSW('<?php print $intID;?>')">Editar</button></td>
-                                        <td style="text-align:center; vertical-align:middle;"><button class="btn btn-secondary btn-block" onclick="deleteSW('<?php print $intID;?>')">Eliminar</button></td>
+                                        <td style="text-align:center; vertical-align:middle;">
+                                            <button class="btn btn-secondary btn-block" onclick="editSW('<?php print $intID;?>')"><i class="fa fa-pencil"></i> Editar</button>
+                                            <button class="btn btn-secondary btn-block" onclick="deleteSW('<?php print $intID;?>')"><i class="fa fa-trash"></i> Eliminar</button>
+                                        </td>
                                     </tr>
                                     <?php
                                 }
@@ -1268,7 +1274,9 @@ class expediente_view{
                             </table>
                             <table class="table table-sm table-hover table-condensed">
                                 <tr>
-                                    <td style="text-align:left;"><button class="btn btn-info" onclick="agregarSW()">(+) Agregar</button></td>
+                                    <td style="text-align:left;">
+                                        <button class="btn btn-info" onclick="agregarSW()"><i class="fa fa-plus"></i> Agregar</button>
+                                    </td>
                                 </tr>
                             </table>
                             </div>
@@ -1314,13 +1322,13 @@ class expediente_view{
                 </div>
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                        <button class="btn btn-info btn-block" onclick="checkForm()">Guardar Cambios</button>
+                        <button class="btn btn-info btn-block" onclick="checkForm()"><i class="fa fa-save"></i> Guardar Cambios</button>
                     </div>
                     <div class="col-xs-12 col-sm-12">
                         <br>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                        <button class="btn btn-info btn-block" onclick="fntExportarData('PDF')">Imprimir Expediente</button>
+                        <button class="btn btn-info btn-block" onclick="fntExportarData('PDF')"><i class="fa fa-print"></i> Imprimir Expediente</button>
                     </div>
                 </div>
                 <?php
@@ -1564,7 +1572,7 @@ class expediente_view{
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <button class="btn btn-info btn-block" id="btnSearchExp" onclick="getExpediente()">Buscar Expediente</button>
+                                            <button class="btn btn-info btn-block" id="btnSearchExp" onclick="getExpediente()"><i class="fa fa-search"></i> Buscar Expediente</button>
                                         </div>
                                     </div>
                                 </div>
