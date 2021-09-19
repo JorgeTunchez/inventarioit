@@ -279,53 +279,53 @@ class identificador_view{
                                 <!-- /.card-header -->
                                 <div class="card-body">
                                     <div id="no-more-tables">
-                                    <table class="table table-sm table-hover table-condensed" id="tblAreas">
-                                        <thead class="cf">
-                                            <tr>
-                                                <th style="text-align:center;">No. </th>
-                                                <th style="text-align:center;">Nombre</th>
-                                                <th colspan="2"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        <?php 
-                                        $arrIdentificador = $this->objModel->getIdentificador();
-                                        $intConteo = 0;
-                                        reset($arrIdentificador);
-                                        while( $rTMP = each($arrIdentificador) ){
-                                            $intConteo++;
-                                            $intID = $rTMP["key"];
-                                            $strNombre = isset($rTMP["value"]["NOMBRE"])? trim($rTMP["value"]["NOMBRE"]): "";
+                                        <table class="table table-sm table-hover table-condensed" id="tblAreas">
+                                            <thead class="cf">
+                                                <tr>
+                                                    <th style="text-align:center;">No. </th>
+                                                    <th style="text-align:center;">Nombre</th>
+                                                    <th style="text-align:center;" colspan="2">Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php 
+                                            $arrIdentificador = $this->objModel->getIdentificador();
+                                            $intConteo = 0;
+                                            reset($arrIdentificador);
+                                            while( $rTMP = each($arrIdentificador) ){
+                                                $intConteo++;
+                                                $intID = $rTMP["key"];
+                                                $strNombre = isset($rTMP["value"]["NOMBRE"])? trim($rTMP["value"]["NOMBRE"]): "";
+                                                ?>
+                                                <tr id="trIdentificador_<?php print $intID;?>">
+                                                    <td data-title="No." style="text-align:center;">
+                                                        <h3><span class="badge badge-success"><?php print $intConteo;?></span></h3>
+                                                        <input id="hdnIdentificador_<?php print $intID;?>" name="hdnIdentificador_<?php print $intID;?>"  type="hidden" value="N">
+                                                    </td>
+                                                    <td data-title="Nombre" style="text-align:center;">
+                                                        <div id="divShowTINombre_<?php print $intID;?>">
+                                                            <?php print $strNombre;?>
+                                                        </div>
+                                                        <div id="divEditTINombre_<?php print $intID;?>" style="display:none;">
+                                                            <input class="form-control" type="text" id="txtNombre_<?php print $intID;?>" name="txtNombre_<?php print $intID;?>" value="<?php print $strNombre;?>">
+                                                        </div>
+                                                    </td>
+                                                    <td  data-title="Acciones"  style="text-align:center;">
+                                                        <button class="btn btn-info btn-block" onclick="editTI('<?php print $intID;?>')"><i class="fa fa-pencil"></i> Editar</button>
+                                                        <button class="btn btn-danger btn-block" onclick="deleteTI('<?php print $intID;?>')"><i class="fa fa-trash"></i> Eliminar</button>
+                                                    </td>
+                                                </tr>
+                                                <?php
+                                            }
                                             ?>
-                                            <tr id="trIdentificador_<?php print $intID;?>">
-                                                <td data-title="No." style="text-align:center;">
-                                                    <h3><span class="badge badge-success"><?php print $intConteo;?></span></h3>
-                                                    <input id="hdnIdentificador_<?php print $intID;?>" name="hdnIdentificador_<?php print $intID;?>"  type="hidden" value="N">
-                                                </td>
-                                                <td data-title="Nombre" style="text-align:center;">
-                                                    <div id="divShowTINombre_<?php print $intID;?>">
-                                                        <?php print $strNombre;?>
-                                                    </div>
-                                                    <div id="divEditTINombre_<?php print $intID;?>" style="display:none;">
-                                                        <input class="form-control" type="text" id="txtNombre_<?php print $intID;?>" name="txtNombre_<?php print $intID;?>" value="<?php print $strNombre;?>">
-                                                    </div>
-                                                </td>
-                                                <td style="text-align:center;">
-                                                    <button class="btn btn-info btn-block" onclick="editTI('<?php print $intID;?>')"><i class="fa fa-pencil"></i> Editar</button>
-                                                    <button class="btn btn-danger btn-block" onclick="deleteTI('<?php print $intID;?>')"><i class="fa fa-trash"></i> Eliminar</button>
-                                                </td>
+                                            </tbody>
+                                        </table>
+                                        <table class="table table-sm table-hover table-condensed">
+                                            <tr>
+                                                <td style="text-align:center;"><button class="btn btn-primary btn-block" onclick="agregarTI()"><i class="fa fa-plus"></i> Agregar</button></td>
+                                                <td style="text-align:center;"><button type="button" class="btn btn-success btn-block" onclick="checkForm()"><i class="fa fa-floppy-o"></i> Guardar</button></td>
                                             </tr>
-                                            <?php
-                                        }
-                                        ?>
-                                        </tbody>
-                                    </table>
-                                    <table class="table table-sm table-hover table-condensed">
-                                        <tr>
-                                            <td style="text-align:center;"><button class="btn btn-primary btn-block" onclick="agregarTI()"><i class="fa fa-plus"></i> Agregar</button></td>
-                                            <td style="text-align:center;"><button type="button" class="btn btn-success btn-block" onclick="checkForm()"><i class="fa fa-floppy-o"></i> Guardar</button></td>
-                                        </tr>
-                                    </table>
+                                        </table>
                                     </div>
                                 </div>
                                 <!-- /.card-body -->

@@ -4,10 +4,10 @@ ini_set('display_errors',0);
 
 function getConexion(){
 
-    $servername = "localhost:3307";
+    $servername = "localhost:3308";
     $username = "root";
     $password = "";
-    $dbname = "micoopeg_inventarioit";
+    $dbname = "inventarioit";
 	$conn = mysqli_connect($servername, $username, $password, $dbname);
 	if (!$conn) {
 	    die("Connection failed: " . mysqli_connect_error());

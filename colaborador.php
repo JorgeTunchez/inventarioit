@@ -291,7 +291,7 @@ class colaborador_view{
                         <th style="text-align:center;">Puesto</th>
                         <th style="text-align:center;">Area</th>
                         <th style="text-align:center;">Activo</th>
-                        <th colspan="2"></th>
+                        <th style="text-align:center;" colspan="2">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -367,7 +367,7 @@ class colaborador_view{
                                 ?>
                             </div>
                         </td>
-                        <td style="text-align:center;">
+                        <td data-title="Acciones" style="text-align:center;">
                             <button class="btn btn-info btn-block" onclick="editColaborador('<?php print $intID;?>')"><i class="fa fa-pencil"></i> Editar</button>
                             <button class="btn btn-danger btn-block btn-block" onclick="deleteColaborador('<?php print $intID;?>')"><i class="fa fa-trash"></i> Eliminar</button>
                         </td>
@@ -379,8 +379,16 @@ class colaborador_view{
             </table>
             <table class="table table-sm table-hover table-condensed">
                 <tr>
-                    <td style="text-align:center;"><button class="btn btn-success btn-block" onclick="agregarColaborador()"><i class="fa fa-plus"></i> Agregar</button></td>
-                    <td style="text-align:center;"><button type="button" class="btn btn-success btn-block" onclick="checkForm()"><i class="fa fa-floppy-o"></i> Guardar</button></td>
+                    <td style="text-align:center;">
+                        <button class="btn btn-success btn-block" onclick="agregarColaborador()">
+                            <i class="fa fa-plus"></i> Agregar
+                        </button>
+                    </td>
+                    <td style="text-align:center;">
+                        <button type="button" class="btn btn-success btn-block" onclick="checkForm()">
+                            <i class="fa fa-floppy-o"></i> Guardar
+                        </button>
+                    </td>
                 </tr>
             </table>
             </div>

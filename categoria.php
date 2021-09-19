@@ -286,7 +286,7 @@ class categoria_view{
                                     <thead class="cf">
                                         <th style="text-align:center;">No. </th>
                                         <th style="text-align:center;">Nombre</th>
-                                        <th colspan="2"></th>
+                                        <th style="text-align:center;" colspan="2">Acciones</th>
                                     </thead>
                                     <tbody>
                                     <?php 
@@ -303,20 +303,24 @@ class categoria_view{
                                         </script>
                                         <tr id="trCategoria_<?php print $intID;?>">
                                             <td data-title="No." style="text-align:center;">
-                                            <h3><span class="badge badge-success"><?php print $intConteo;?></span></h3>
-                                            <input id="hdnCategoria_<?php print $intID;?>" name="hdnCategoria_<?php print $intID;?>"  type="hidden" value="N">
+                                                <h3><span class="badge badge-success"><?php print $intConteo;?></span></h3>
+                                                <input id="hdnCategoria_<?php print $intID;?>" name="hdnCategoria_<?php print $intID;?>"  type="hidden" value="N">
                                             </td>
                                             <td data-title="Nombre" style="text-align:center;">
-                                            <div id="divShowCategoriaNombre_<?php print $intID;?>">
-                                                <?php print $strNombre;?>
-                                            </div>
-                                            <div id="divEditCategoriaNombre_<?php print $intID;?>" style="display:none;">
-                                                <input class="form-control" type="text" id="txtNombre_<?php print $intID;?>" name="txtNombre_<?php print $intID;?>" value="<?php print $strNombre;?>">
-                                            </div>
+                                                <div id="divShowCategoriaNombre_<?php print $intID;?>">
+                                                    <?php print $strNombre;?>
+                                                </div>
+                                                <div id="divEditCategoriaNombre_<?php print $intID;?>" style="display:none;">
+                                                    <input class="form-control" type="text" id="txtNombre_<?php print $intID;?>" name="txtNombre_<?php print $intID;?>" value="<?php print $strNombre;?>">
+                                                </div>
                                             </td>
-                                            <td style="text-align:center;">
-                                                <button class="btn btn-info btn-block" onclick="editCategoria('<?php print $intID;?>')"><i class="fa fa-pencil"></i> Editar</button>
-                                                <button class="btn btn-danger btn-block" onclick="deleteCategoria('<?php print $intID;?>')"><i class="fa fa-trash"></i> Eliminar</button>
+                                            <td data-title="Acciones" style="text-align:center;">
+                                                <button class="btn btn-info btn-block" onclick="editCategoria('<?php print $intID;?>')">
+                                                    <i class="fa fa-pencil"></i> Editar
+                                                </button>
+                                                <button class="btn btn-danger btn-block" onclick="deleteCategoria('<?php print $intID;?>')">
+                                                    <i class="fa fa-trash"></i> Eliminar
+                                                </button>
                                             </td>
                                         </tr>
                                         <?php

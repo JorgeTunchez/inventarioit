@@ -287,7 +287,7 @@ class area_view{
                                         <tr>
                                             <th style="text-align:center;">No. </th>
                                             <th style="text-align:center;">Nombre</th>
-                                            <th colspan="2"></th>
+                                            <th  style="text-align:center;"colspan="2">Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -309,14 +309,14 @@ class area_view{
                                                 <input id="hdnArea_<?php print $intID;?>" name="hdnArea_<?php print $intID;?>"  type="hidden" value="N">
                                             </td>
                                             <td data-title="Nombre" style="text-align:center;">
-                                            <div id="divShowAreaNombre_<?php print $intID;?>">
-                                                <?php print $strNombre;?>
-                                            </div>
-                                            <div id="divEditAreaNombre_<?php print $intID;?>" style="display:none;">
-                                                <input class="form-control" type="text" id="txtNombre_<?php print $intID;?>" name="txtNombre_<?php print $intID;?>" value="<?php print $strNombre;?>">
-                                            </div>
+                                                <div id="divShowAreaNombre_<?php print $intID;?>">
+                                                    <?php print $strNombre;?>
+                                                </div>
+                                                <div id="divEditAreaNombre_<?php print $intID;?>" style="display:none;">
+                                                    <input class="form-control" type="text" id="txtNombre_<?php print $intID;?>" name="txtNombre_<?php print $intID;?>" value="<?php print $strNombre;?>">
+                                                </div>
                                             </td>
-                                            <td style="text-align:center;">
+                                            <td data-title="Acciones" style="text-align:center;">
                                                 <button class="btn btn-info btn-block" onclick="editArea('<?php print $intID;?>')"><i class="fa fa-pencil"></i> Editar</button>
                                                 <button class="btn btn-danger btn-block" onclick="deleteArea('<?php print $intID;?>')"><i class="fa fa-trash"></i> Eliminar</button>
                                             </td>
