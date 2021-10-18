@@ -12,7 +12,6 @@ function getConexion(){
 	if (!$conn) {
 	    die("Connection failed: " . mysqli_connect_error());
 	}else{
-		//print "Conexion exitosa";
 		return $conn;
 	}
 }
