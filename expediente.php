@@ -564,7 +564,7 @@ class expediente_view
         $arrArea = $this->objModel->getArea();
 ?>
         <label>
-            <h5>1. Seleccione un área:</h5>
+            <h4>1. Seleccione un área:</h4>
         </label>
         <select id="selectArea" name="selectArea" style="text-align:center; width:100%;" class="form-control select2" onchange="loadColaboradores()">
             <?php
@@ -602,7 +602,7 @@ class expediente_view
         $arrColaboradores = $this->objModel->getListadoColaboradoresArea($intArea);
     ?>
         <label>
-            <h5>2. Seleccione un colaborador:</h5>
+            <h4>2. Seleccione un colaborador:</h4>
         </label>
         <select id="selectColaboradores" name="selectColaboradores" style="text-align:center; width:100%;" class="form-control select2">
             <option value="0">-- Seleccione un colaborador --</option>
@@ -914,7 +914,7 @@ class expediente_view
         if (count($arrColaborador) > 0) {
             reset($arrColaborador);
             while ($rTMP = each($arrColaborador)) {
-        ?>
+            ?>
                 <div class="col-sm-12 col-md-12 col-lg-12">
                     <br><br><br>
                     <div class="card card-success">
@@ -924,7 +924,7 @@ class expediente_view
                         <div class="card-body" id="divDatosColaborador">
                             <table class="table" id="tblDatosPersonales">
                                 <tr style="display:none;">
-                                    <td colspan="4"><input type="hidden" id="hdnColaborador" name="hdnColaborador" value="<?php print $intColaborador; ?>"></td>
+                                    <td colspan="6"><input type="hidden" id="hdnColaborador" name="hdnColaborador" value="<?php print $intColaborador; ?>"></td>
                                 </tr>
                                 <?php
                                 reset($rTMP["value"]["DATOS_PERSONALES"]);
@@ -941,14 +941,12 @@ class expediente_view
                                         <td><?php print $strNombres; ?></td>
                                         <td style="text-align:center;"><b>Apellidos:</b> </td>
                                         <td><?php print $strApellidos; ?></td>
-                                    </tr>
-                                    <tr>
                                         <td style="text-align:center;"><b>CIF:</b> </td>
                                         <td><?php print $strCIF; ?></td>
-                                        <td style="text-align:center;"><b>Puesto:</b> </td>
-                                        <td><?php print $strPuesto; ?></td>
                                     </tr>
                                     <tr>
+                                        <td style="text-align:center;"><b>Puesto:</b> </td>
+                                        <td><?php print $strPuesto; ?></td>
                                         <td style="text-align:center;"><b>Area:</b> </td>
                                         <td><?php print $strArea; ?></td>
                                         <td style="text-align:center;"><b>En uso:</b> </td>
@@ -978,28 +976,28 @@ class expediente_view
                                         $strDireccionIP = $rTMP5["value"]["DIRECCIONIP"];
                                         $strDominio = $rTMP5["value"]["DOMINIO"];
                                         $strUsuario = $rTMP5["value"]["USUARIO"];
-                                ?>
+                                    ?>
                                         <tr>
                                             <td style="text-align:center; vertical-align:middle;"><b>Nombre PC</b></td>
                                             <td><input class="form-control" type="text" id="txtNombrePC" name="txtNombrePC" value="<?php print $strNombreEquipo; ?>"></td>
                                             <td>&nbsp;</td>
-                                        </tr>
-                                        <tr>
                                             <td style="text-align:center; vertical-align:middle;"><b>Dirección IP</b></td>
                                             <td><input class="form-control" type="text" id="txtIPPC" name="txtIPPC" value="<?php print $strDireccionIP; ?>"></td>
                                             <td>&nbsp;</td>
                                         </tr>
                                         <tr>
                                             <td style="text-align:center; vertical-align:middle;"><b>Dominio</b></td>
-                                            <td><input class="form-control" type="text" id="txtDominicioPC" name="txtDominicioPC" value="<?php print $strDominio; ?>"></td>
+                                            <td>
+                                                <select class="form-control" id="txtDominicioPC" name="txtDominicioPC">
+                                                    <option value="No" <?php print ( $strDominio =="No" )?"selected":""; ?>>No</option>
+                                                    <option value="Si" <?php print ( $strDominio =="Si" )?"selected":""; ?>>Si</option>
+                                                </select>
                                             <td>&nbsp;</td>
-                                        </tr>
-                                        <tr>
                                             <td style="text-align:center; vertical-align:middle;"><b>Usuario</b></td>
                                             <td><input class="form-control" type="text" id="txtUsuarioPC" name="txtUsuarioPC" value="<?php print $strUsuario; ?>"></td>
                                             <td>&nbsp;</td>
                                         </tr>
-                                <?php
+                                    <?php
                                     }
                                 }
                                 ?>
@@ -1355,9 +1353,6 @@ class expediente_view
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                             <button class="btn btn-info btn-block" onclick="checkForm()"><i class="fa fa-save"></i> Guardar Cambios</button>
                         </div>
-                        <div class="col-xs-12 col-sm-12">
-                            <br>
-                        </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                             <button class="btn btn-info btn-block" onclick="fntExportarData('PDF')"><i class="fa fa-print"></i> Imprimir Expediente</button>
                         </div>
@@ -1596,27 +1591,26 @@ class expediente_view
                                     <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12">
                                         <form id="frmFiltros" method="post"></form>
                                         <div class="card">
-                                            <div class="card-header">
-                                                <h3 class="card-title"><b>Gestión de expedientes</b></h3>
+                                            <div class="card-header" style="text-align:center; padding: 10px;">
+                                                <h2>Gestión de Expedientes</h2>
                                             </div>
                                             <!-- /.card-header -->
                                             <div class="card-body">
                                                 <div class="row">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <div class="form-group">
                                                             <?php $this->drawSelectArea(); ?>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <div class="form-group" id="divSelectColaborador">
                                                             <?php $this->drawSelectColaborador(); ?>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <br>
                                                 <div class="row">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <button class="btn btn-info btn-block" id="btnSearchExp" onclick="getExpediente()"><i class="fa fa-search"></i> Buscar Expediente</button>
                                                     </div>
                                                 </div>
@@ -1638,7 +1632,7 @@ class expediente_view
                     </div>
                     <!-- /.content-wrapper -->
                     <footer class="main-footer">
-                        <strong>Copyright 2020</strong>
+                        <strong>Copyright <?php print date("Y"); ?></strong>
                         <div class="float-right d-none d-sm-inline-block">
                             <b>Version</b> 1.0
                         </div>

@@ -293,7 +293,7 @@ class identificador_view
                                 <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12">
                                     <div class="card">
                                         <div class="card-header" style="text-align:center;">
-                                            <h3 class="card-title">Catálogo de tipo identificador</h3>
+                                            <h2>Catálogo de tipo identificador</h2>
                                         </div>
                                         <!-- /.card-header -->
                                         <div class="card-body">
@@ -303,7 +303,7 @@ class identificador_view
                                                         <tr>
                                                             <th style="text-align:center;">No. </th>
                                                             <th style="text-align:center;">Nombre</th>
-                                                            <th style="text-align:center;" colspan="2">Acciones</th>
+                                                            <th style="text-align:center;">Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -317,11 +317,11 @@ class identificador_view
                                                             $strNombre = isset($rTMP["value"]["NOMBRE"]) ? trim($rTMP["value"]["NOMBRE"]) : "";
                                                         ?>
                                                             <tr id="trIdentificador_<?php print $intID; ?>">
-                                                                <td data-title="No." style="text-align:center;">
+                                                                <td data-title="No." style="text-align:center; vertical-align:middle;">
                                                                     <h3><span class="badge badge-success"><?php print $intConteo; ?></span></h3>
                                                                     <input id="hdnIdentificador_<?php print $intID; ?>" name="hdnIdentificador_<?php print $intID; ?>" type="hidden" value="N">
                                                                 </td>
-                                                                <td data-title="Nombre" style="text-align:center;">
+                                                                <td data-title="Nombre" style="text-align:center; vertical-align:middle;">
                                                                     <div id="divShowTINombre_<?php print $intID; ?>">
                                                                         <?php print $strNombre; ?>
                                                                     </div>
@@ -329,7 +329,7 @@ class identificador_view
                                                                         <input class="form-control" type="text" id="txtNombre_<?php print $intID; ?>" name="txtNombre_<?php print $intID; ?>" value="<?php print $strNombre; ?>">
                                                                     </div>
                                                                 </td>
-                                                                <td data-title="Acciones" style="text-align:center;">
+                                                                <td data-title="Acciones" style="text-align:center; vertical-align:middle;">
                                                                     <button class="btn btn-info btn-block" onclick="editTI('<?php print $intID; ?>')"><i class="fa fa-pencil"></i> Editar</button>
                                                                     <button class="btn btn-danger btn-block" onclick="deleteTI('<?php print $intID; ?>')"><i class="fa fa-trash"></i> Eliminar</button>
                                                                 </td>
@@ -359,7 +359,7 @@ class identificador_view
                 </div>
                 <!-- /.content-wrapper -->
                 <footer class="main-footer">
-                    <strong>Copyright 2020</strong>
+                    <strong>Copyright <?php print date("Y"); ?></strong>
                     <div class="float-right d-none d-sm-inline-block">
                         <b>Version</b> 1.0
                     </div>

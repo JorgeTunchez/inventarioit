@@ -303,7 +303,7 @@ class colaborador_view
                             <th style="text-align:center;">Nombres</th>
                             <th style="text-align:center;">Apellidos</th>
                             <th style="text-align:center;">Puesto</th>
-                            <th style="text-align:center;">Area</th>
+                            <th style="text-align:center;">Area/Agencia</th>
                             <th style="text-align:center;">Activo</th>
                             <th style="text-align:center;" colspan="2">Acciones</th>
                         </tr>
@@ -580,13 +580,11 @@ class colaborador_view
                                 <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12">
                                     <div class="card">
                                         <div class="card-header" style="text-align:center; padding: 10px;">
-                                            <h3 class="card-title">Gestión de colaboradores</h3>
+                                            <h2>Gestión de colaboradores</h2>
                                             <br><br>
                                             <div class="row">
                                                 <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                                    <h5><b>Seleccione un Agencia/Área:</b></h5>
-                                                </div>
-                                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                                    <label><b>Seleccione un Agencia/Area:</b></label>
                                                     <?php $this->drawSelectAreaAll(); ?>
                                                 </div>
                                             </div>
@@ -612,7 +610,7 @@ class colaborador_view
                 </div>
                 <!-- /.content-wrapper -->
                 <footer class="main-footer">
-                    <strong>Copyright 2020</strong>
+                    <strong>Copyright <?php print date("Y"); ?></strong>
                     <div class="float-right d-none d-sm-inline-block">
                         <b>Version</b> 1.0
                     </div>

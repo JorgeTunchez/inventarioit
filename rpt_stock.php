@@ -268,7 +268,7 @@ class rptstock_view
         $arrArea = $this->objModel->getArea();
 ?>
         <label>
-            <h4>1. Seleccione un área:</h4>
+            <h5>1. Seleccione un área:</h5>
         </label>
         <select id="selectArea" name="selectArea[]" style="text-align:center; width:100%;" class="form-control selectpicker" data-selected-text-format="count" data-live-search="true" data-actions-box="true" multiple>
             <?php
@@ -288,7 +288,7 @@ class rptstock_view
         $arrComponenteHD = $this->objModel->getComponenteHD();
     ?>
         <label>
-            <h4>2. Seleccione un componente:</h4>
+            <h5>2. Seleccione un componente:</h5>
         </label>
         <select id="selectComponente" name="selectComponente" style="text-align:center; width:100%;" class="form-control select2">
             <?php
@@ -484,9 +484,9 @@ class rptstock_view
                                 <thead class="cf">
                                     <tr style="background-color: #17a2b8; color:white;">
                                         <th style="text-align:center;">No.</th>
+                                        <th style="text-align:center;">Detalle</th>
                                         <th style="text-align:center;">Área</th>
                                         <th style="text-align:center;">Conteo</th>
-                                        <th style="text-align:center;">Detalle</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -506,18 +506,18 @@ class rptstock_view
                                             <td data-title="No." style="text-align:center;">
                                                 <h3><span class="badge badge-info"><?php print $intCount; ?></span></h3>
                                             </td>
+                                            <td data-title="Detalle" style="text-align:center;"><button class="btn btn-success" onclick="getDetail('<?php print $intArea; ?>','<?php print $intComponente; ?>')"><i class="fa fa-search"></i> Ver detalles</button></td>
                                             <td data-title="Área" style="text-align:center;"><?php print $strNombreArea; ?></td>
                                             <td data-title="Conteo" style="text-align:center;"><?php print $intConteo; ?></td>
-                                            <td data-title="Detalle" style="text-align:center;"><button class="btn btn-success" onclick="getDetail('<?php print $intArea; ?>','<?php print $intComponente; ?>')"><i class="fa fa-search"></i> Ver detalles</button></td>
                                         </tr>
                                     <?php
                                     }
                                     ?>
                                     <tr>
                                         <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
                                         <td style="text-align:center;"><b>Total..</b></td>
                                         <td style="text-align:center;"><b><?php print $intSuma; ?></b></td>
-                                        <td>&nbsp;</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -705,33 +705,29 @@ class rptstock_view
                                 <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12">
                                     <form id="frmFiltros" method="post"></form>
                                     <div class="card">
-                                        <div class="card-header">
-                                            <h3 class="card-title">Reporte de Stock</h3>
+                                        <div class="card-header" style="text-align:center; padding: 10px;">
+                                            <h2>Reporte de Stock</h2>
                                         </div>
                                         <!-- /.card-header -->
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <?php $this->drawSelectArea(); ?>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <?php $this->drawSelectComponenteHD(); ?>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                                    <button class="btn btn-info btn-block" onclick="getReporte()"><i class="fa fa-search"></i> Generar</button>
-                                                </div>
-                                            </div>
                                             <br>
                                             <div class="row">
-                                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                                                    <button class="btn btn-info btn-block" onclick="getReporte()"><i class="fa fa-search"></i> Generar</button>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
                                                     <button id="btnExportarPDF" class="btn btn-info btn-block" onclick="fntExportarData('PDF')" style="display:none;"><i class="fa fa-print"></i> Imprimir PDF</button>
                                                 </div>
                                             </div>
@@ -753,7 +749,7 @@ class rptstock_view
                 </div>
                 <!-- /.content-wrapper -->
                 <footer class="main-footer">
-                    <strong>Copyright 2020</strong>
+                    <strong>Copyright <?php print date("Y"); ?></strong>
                     <div class="float-right d-none d-sm-inline-block">
                         <b>Version</b> 1.0
                     </div>
@@ -859,26 +855,28 @@ class rptstock_view
                 }
 
                 function getReporte() {
-                    var intArea = $("#selectArea").val();
-                    var intComponente = $("#selectComponente").val();
 
-                    if (intArea == 0) {
+                    var intComponente = $("#selectComponente").val();
+                    var selectAreas = [];
+                    $.each($("#selectArea option:selected"), function() {
+                        selectAreas.push($(this).val());
+                    });
+
+                    var areasLength = selectAreas.length;
+
+                    if( areasLength == 0 ){
                         $("#selectArea").css('background-color', '#f4d0de');
-                    } else {
+                    }else{
                         $("#selectArea").css('background-color', '');
-                        var selectAreas = [];
-                        $.each($("#selectArea option:selected"), function() {
-                            selectAreas.push($(this).val());
-                        });
                     }
 
-                    if (intComponente == 0) {
+                    if ( intComponente == 0 ) {
                         $("#selectComponente").css('background-color', '#f4d0de');
                     } else {
                         $("#selectComponente").css('background-color', '');
                     }
 
-                    if (intComponente > 0) {
+                    if ( areasLength>0 && intComponente > 0 ) {
                         $.ajax({
                             url: "rpt_stock.php",
                             data: {

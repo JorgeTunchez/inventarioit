@@ -296,7 +296,7 @@ class categoria_view
                                 <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12">
                                     <div class="card">
                                         <div class="card-header" style="text-align:center;">
-                                            <h3 class="card-title">Catálogo de categorías</h3>
+                                            <h2>Catálogo de categorías</h2>
                                         </div>
                                         <!-- /.card-header -->
                                         <div class="card-body">
@@ -305,7 +305,7 @@ class categoria_view
                                                     <thead class="cf">
                                                         <th style="text-align:center;">No. </th>
                                                         <th style="text-align:center;">Nombre</th>
-                                                        <th style="text-align:center;" colspan="2">Acciones</th>
+                                                        <th style="text-align:center;">Acciones</th>
                                                     </thead>
                                                     <tbody>
                                                         <?php
@@ -321,11 +321,11 @@ class categoria_view
                                                                 arrCategorias.push('<?php print $strNombre; ?>');
                                                             </script>
                                                             <tr id="trCategoria_<?php print $intID; ?>">
-                                                                <td data-title="No." style="text-align:center;">
+                                                                <td data-title="No." style="text-align:center; vertical-align:middle;">
                                                                     <h3><span class="badge badge-success"><?php print $intConteo; ?></span></h3>
                                                                     <input id="hdnCategoria_<?php print $intID; ?>" name="hdnCategoria_<?php print $intID; ?>" type="hidden" value="N">
                                                                 </td>
-                                                                <td data-title="Nombre" style="text-align:center;">
+                                                                <td data-title="Nombre" style="text-align:center; vertical-align:middle;">
                                                                     <div id="divShowCategoriaNombre_<?php print $intID; ?>">
                                                                         <?php print $strNombre; ?>
                                                                     </div>
@@ -333,7 +333,7 @@ class categoria_view
                                                                         <input class="form-control" type="text" id="txtNombre_<?php print $intID; ?>" name="txtNombre_<?php print $intID; ?>" value="<?php print $strNombre; ?>">
                                                                     </div>
                                                                 </td>
-                                                                <td data-title="Acciones" style="text-align:center;">
+                                                                <td data-title="Acciones" style="text-align:center; vertical-align:middle;">
                                                                     <button class="btn btn-info btn-block" onclick="editCategoria('<?php print $intID; ?>')">
                                                                         <i class="fa fa-pencil"></i> Editar
                                                                     </button>
@@ -371,7 +371,7 @@ class categoria_view
                 </div>
                 <!-- /.content-wrapper -->
                 <footer class="main-footer">
-                    <strong>Copyright 2020</strong>
+                    <strong>Copyright <?php print date("Y"); ?></strong>
                     <div class="float-right d-none d-sm-inline-block">
                         <b>Version</b> 1.0
                     </div>

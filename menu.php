@@ -291,7 +291,7 @@ class menu_view
                 </div>
                 <!-- /.content-wrapper -->
                 <footer class="main-footer">
-                    <strong>Copyright 2020</strong>
+                    <strong>Copyright <?php print date("Y"); ?></strong>
                     <div class="float-right d-none d-sm-inline-block">
                         <b>Version</b> 1.0
                     </div>

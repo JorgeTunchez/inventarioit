@@ -297,7 +297,7 @@ class area_view
                                 <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12">
                                     <div class="card">
                                         <div class="card-header" style="text-align:center;">
-                                            <h3 class="card-title">Catálogo de áreas</h3>
+                                            <h2>Catálogo de áreas</h2>
                                         </div>
                                         <!-- /.card-header -->
                                         <div class="card-body">
@@ -307,7 +307,7 @@ class area_view
                                                         <tr>
                                                             <th style="text-align:center;">No. </th>
                                                             <th style="text-align:center;">Nombre</th>
-                                                            <th style="text-align:center;" colspan="2">Acciones</th>
+                                                            <th style="text-align:center;">Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -324,11 +324,11 @@ class area_view
                                                                 arrAreas.push('<?php print $strNombre; ?>');
                                                             </script>
                                                             <tr id="trArea_<?php print $intID; ?>">
-                                                                <td data-title="No." style="text-align:center;">
+                                                                <td data-title="No." style="text-align:center; vertical-align:middle;">
                                                                     <h3><span class="badge badge-success"><?php print $intConteo; ?></span></h3>
                                                                     <input id="hdnArea_<?php print $intID; ?>" name="hdnArea_<?php print $intID; ?>" type="hidden" value="N">
                                                                 </td>
-                                                                <td data-title="Nombre" style="text-align:center;">
+                                                                <td data-title="Nombre" style="text-align:center; vertical-align:middle;">
                                                                     <div id="divShowAreaNombre_<?php print $intID; ?>">
                                                                         <?php print $strNombre; ?>
                                                                     </div>
@@ -336,7 +336,7 @@ class area_view
                                                                         <input class="form-control" type="text" id="txtNombre_<?php print $intID; ?>" name="txtNombre_<?php print $intID; ?>" value="<?php print $strNombre; ?>">
                                                                     </div>
                                                                 </td>
-                                                                <td data-title="Acciones" style="text-align:center;">
+                                                                <td data-title="Acciones" style="text-align:center; vertical-align:middle;">
                                                                     <button class="btn btn-info btn-block" onclick="editArea('<?php print $intID; ?>')"><i class="fa fa-pencil"></i> Editar</button>
                                                                     <button class="btn btn-danger btn-block" onclick="deleteArea('<?php print $intID; ?>')"><i class="fa fa-trash"></i> Eliminar</button>
                                                                 </td>
@@ -370,7 +370,7 @@ class area_view
                 </div>
                 <!-- /.content-wrapper -->
                 <footer class="main-footer">
-                    <strong>Copyright 2020</strong>
+                    <strong>Copyright <?php print date("Y"); ?></strong>
                     <div class="float-right d-none d-sm-inline-block">
                         <b>Version</b> 1.0
                     </div>
