@@ -90,47 +90,42 @@ class identificador_model
     public function insertIdentificador($strNombre, $intUser)
     {
         if ($strNombre != '' && $intUser > 0) {
-            $conn = getConexion();
             $strQuery = "INSERT INTO tipo_identificador (nombre, add_fecha, add_user) VALUES ('{$strNombre}', now(), {$intUser})";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function deleteIdentificador($intTipoIdentificador)
     {
         if ($intTipoIdentificador > 0) {
-            $conn = getConexion();
             $strQuery = "DELETE FROM tipo_identificador WHERE id = {$intTipoIdentificador}";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function updateIdentificador($intTipoIdentificador, $strNombre, $intUser)
     {
         if ($intTipoIdentificador > 0 && $strNombre != '' && $intUser > 0) {
-            $conn = getConexion();
             $strQuery = "UPDATE tipo_identificador 
                             SET nombre = '{$strNombre}',
                                 mod_fecha = now(),
                                 mod_user = {$intUser} 
                           WHERE id = {$intTipoIdentificador}";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function getIdentificador()
     {
-        $conn = getConexion();
         $arrTipoIdentificador = array();
         $strQuery = "SELECT id, nombre FROM tipo_identificador ORDER BY nombre";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrTipoIdentificador[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
 
-        mysqli_close($conn);
         return $arrTipoIdentificador;
     }
 }
@@ -264,8 +259,8 @@ class identificador_view
                             <div class="image">
                                 <img src="images/user.png" class="img-circle elevation-2">
                             </div>
-                            <div class="info">
-                                <a href="#" class="d-block"><b><?php print $this->arrRolUser["NAME"]; ?></b></a>
+                            <div class="info" style="color:white;">
+                                <b><?php print $this->arrRolUser["NAME"]; ?></b>
                             </div>
                         </div>
                         <?php draMenu("identificador.php", 2); ?>

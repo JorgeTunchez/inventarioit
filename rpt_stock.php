@@ -119,47 +119,40 @@ class rptstock_model
 
     public function getArea()
     {
-        $conn = getConexion();
         $arrArea = array();
         $strQuery = "SELECT DISTINCT area.id, 
                             area.nombre 
                        FROM expedientes 
-                            INNER JOIN colaborador 
-                                    ON expedientes.colaborador = colaborador.id
-                            INNER JOIN area 
-                                    ON colaborador.area = area.id
+                            INNER JOIN colaborador ON expedientes.colaborador = colaborador.id
+                            INNER JOIN area ON colaborador.area = area.id
                       ORDER BY area.nombre";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrArea[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
 
-        mysqli_close($conn);
         return $arrArea;
     }
 
     public function getComponenteHD()
     {
-        $conn = getConexion();
         $arrComponenteHD = array();
         $strQuery = "SELECT id, nombre FROM componente WHERE categoria = 1 ORDER BY nombre";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrComponenteHD[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
 
-        mysqli_close($conn);
         return $arrComponenteHD;
     }
 
     public function getDetalle($intArea, $intComponente)
     {
         if ($intArea > 0 && $intComponente > 0) {
-            $conn = getConexion();
             $arrDetalle = array();
             $strQuery = "SELECT colaborador.id,
                                 colaborador.cif,
@@ -167,17 +160,14 @@ class rptstock_model
                                 colaborador.puesto,
                                 COUNT(expediente_detail.id) conteo
                            FROM expediente_detail 
-                                INNER JOIN expedientes 
-                                        ON expediente_detail.expediente = expedientes.id 
-                                INNER JOIN colaborador 
-                                        ON expedientes.colaborador = colaborador.id 
-                                INNER JOIN area 
-                                        ON colaborador.area = area.id 
+                                INNER JOIN expedientes ON expediente_detail.expediente = expedientes.id 
+                                INNER JOIN colaborador ON expedientes.colaborador = colaborador.id 
+                                INNER JOIN area ON colaborador.area = area.id 
                           WHERE expediente_detail.componente = {$intComponente} 
                             AND area.id IN({$intArea})
                           GROUP BY nombrecolaborador
                           ORDER BY nombrecolaborador";
-            $result = mysqli_query($conn, $strQuery);
+            $result = executeQuery($strQuery);
             if (!empty($result)) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $arrDetalle[$row["id"]]["CIF"] = $row["cif"];
@@ -187,7 +177,6 @@ class rptstock_model
                 }
             }
 
-            mysqli_close($conn);
             return $arrDetalle;
         }
     }
@@ -221,22 +210,18 @@ class rptstock_model
             }
 
             $arrEstadisticas = array();
-            $conn = getConexion();
             $strQuery = "SELECT area.id,
                                 area.nombre nombrearea, 
                                 COUNT(expediente_detail.id) conteo 
                            FROM expediente_detail
-                                INNER JOIN expedientes 
-                                        ON expediente_detail.expediente = expedientes.id
-                                INNER JOIN colaborador 
-                                        ON expedientes.colaborador = colaborador.id
-                                INNER JOIN area 
-                                        ON colaborador.area = area.id
+                                INNER JOIN expedientes ON expediente_detail.expediente = expedientes.id
+                                INNER JOIN colaborador ON expedientes.colaborador = colaborador.id
+                                INNER JOIN area ON colaborador.area = area.id
                           WHERE expediente_detail.componente = {$intComponente}
                                 {$strAndAreas}
                           GROUP BY area.nombre
                           ORDER BY area.nombre";
-            $result = mysqli_query($conn, $strQuery);
+            $result = executeQuery($strQuery);
             if (!empty($result)) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $arrEstadisticas[$row["id"]]["COMPONENTE"] = $intComponente;
@@ -244,8 +229,6 @@ class rptstock_model
                     $arrEstadisticas[$row["id"]]["CONTEO"] = $row["conteo"];
                 }
             }
-
-            mysqli_close($conn);
             return $arrEstadisticas;
         }
     }
@@ -676,8 +659,8 @@ class rptstock_view
                             <div class="image">
                                 <img src="images/user.png" class="img-circle elevation-2">
                             </div>
-                            <div class="info">
-                                <a href="#" class="d-block"><b><?php print $this->arrRolUser["NAME"]; ?></b></a>
+                            <div class="info" style="color:white;">
+                                <b><?php print $this->arrRolUser["NAME"]; ?></b>
                             </div>
                         </div>
                         <?php draMenu("rpt_stock.php", 3); ?>
@@ -865,9 +848,7 @@ class rptstock_view
                     var areasLength = selectAreas.length;
 
                     if( areasLength == 0 ){
-                        $("#selectArea").css('background-color', '#f4d0de');
-                    }else{
-                        $("#selectArea").css('background-color', '');
+                        alert("Debe seleccionar al menos un area");
                     }
 
                     if ( intComponente == 0 ) {

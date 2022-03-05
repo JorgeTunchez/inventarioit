@@ -199,7 +199,6 @@ class expediente_model
 
         $arrColaboradores = array();
         if ($intArea > 0) {
-            $conn = getConexion();
             $strQuery = "SELECT colaborador.id,
                                 colaborador.cif,
                                 CONCAT(colaborador.nombres,' ', colaborador.apellidos) nombrecompleto
@@ -208,15 +207,13 @@ class expediente_model
                                         ON colaborador.area = area.id
                           WHERE area.id = {$intArea} 
                           ORDER BY colaborador.nombres";
-            $result = mysqli_query($conn, $strQuery);
+            $result = executeQuery($strQuery);
             if (!empty($result)) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $arrColaboradores[$row["id"]]["CIF"] = $row["cif"];
                     $arrColaboradores[$row["id"]]["NOMBRECOMPLETO"] = $row["nombrecompleto"];
                 }
             }
-
-            mysqli_close($conn);
         }
 
         return $arrColaboradores;
@@ -225,17 +222,15 @@ class expediente_model
     public function getIDExpedienteColaborador($intColaborador)
     {
         if ($intColaborador > 0) {
-            $conn = getConexion();
             $intIDExpediente = 0;
             $strQueryExp = "SELECT id FROM expedientes WHERE colaborador = {$intColaborador}";
-            $result = mysqli_query($conn, $strQueryExp);
+            $result = executeQuery($strQueryExp);
             if (!empty($result)) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $intIDExpediente = $row["id"];
                 }
             }
 
-            mysqli_close($conn);
             return $intIDExpediente;
         }
     }
@@ -246,12 +241,11 @@ class expediente_model
 
         $arrColaborador = array();
         if ($intColaborador > 0) {
-            $conn = getConexion();
 
             //Obtener el ID del expediente
             $intIDExpediente = 0;
             $strQueryExp = "SELECT id FROM expedientes WHERE colaborador = {$intColaborador}";
-            $result = mysqli_query($conn, $strQueryExp);
+            $result = executeQuery($strQueryExp);
             if (!empty($result)) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $intIDExpediente = $row["id"];
@@ -262,7 +256,7 @@ class expediente_model
             $strQueryComment = "SELECT expedientes.comentario
                                   FROM expedientes 
                                  WHERE expedientes.colaborador = {$intColaborador}";
-            $result = mysqli_query($conn, $strQueryComment);
+            $result = executeQuery($strQueryComment);
             if (!empty($result)) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $arrColaborador[$intColaborador]["COMENTARIO"][$intColaborador]["COMENTARIO"] = $row["comentario"];
@@ -278,10 +272,9 @@ class expediente_model
                                 area.nombre nombrearea,
                                 colaborador.activo
                            FROM colaborador
-                                INNER JOIN area 
-                                        ON colaborador.area = area.id
+                                INNER JOIN area ON colaborador.area = area.id
                           WHERE colaborador.id = {$intColaborador}";
-            $result = mysqli_query($conn, $strQuery);
+            $result = executeQuery($strQuery);
             if (!empty($result)) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $arrColaborador[$intColaborador]["DATOS_PERSONALES"][$intColaborador]["NOMBRES"] = $row["nombres"];
@@ -300,7 +293,7 @@ class expediente_model
                                        expedientes.usuario
                                   FROM expedientes 
                                  WHERE expedientes.colaborador = {$intColaborador}";
-            $result = mysqli_query($conn, $strQueryComment);
+            $result = executeQuery($strQueryComment);
             if (!empty($result)) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $arrColaborador[$intColaborador]["DATOSEQUIPO"][$intColaborador]["NOMBREEQUIPO"] = $row["nombreequipo"];
@@ -322,13 +315,11 @@ class expediente_model
                                 expediente_detail.linea,
                                 expediente_detail.anio  
                            FROM expediente_detail 
-                                INNER JOIN componente 
-                                        ON expediente_detail.componente = componente.id
-                                INNER JOIN categoria 
-                                        ON componente.categoria = categoria.id
+                                INNER JOIN componente ON expediente_detail.componente = componente.id
+                                INNER JOIN categoria ON componente.categoria = categoria.id
                           WHERE expediente_detail.expediente = {$intIDExpediente}
                             AND categoria.id = 1";
-            $result = mysqli_query($conn, $strQuery);
+            $result = executeQuery($strQuery);
             if (!empty($result)) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $arrColaborador[$intColaborador]["DETALLE_HARDWARE"][$row["iddetail"]]["ID_COMPONENTE"] = $row["idcomponente"];
@@ -349,13 +340,11 @@ class expediente_model
                                 expediente_detail.usuario,
                                 expediente_detail.operador
                            FROM expediente_detail 
-                                INNER JOIN componente 
-                                        ON expediente_detail.componente = componente.id
-                                INNER JOIN categoria 
-                                        ON componente.categoria = categoria.id
+                                INNER JOIN componente ON expediente_detail.componente = componente.id
+                                INNER JOIN categoria ON componente.categoria = categoria.id
                           WHERE expediente_detail.expediente = {$intIDExpediente}
                             AND categoria.id = 5";
-            $result = mysqli_query($conn, $strQuery);
+            $result = executeQuery($strQuery);
             if (!empty($result)) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $arrColaborador[$intColaborador]["PLATAFORMAS"][$row["iddetail"]]["ID_COMPONENTE"] = $row["idcomponente"];
@@ -372,13 +361,11 @@ class expediente_model
                                 expediente_detail.pago,
                                 expediente_detail.version
                            FROM expediente_detail 
-                                INNER JOIN componente 
-                                        ON expediente_detail.componente = componente.id
-                                INNER JOIN categoria 
-                                        ON componente.categoria = categoria.id
+                                INNER JOIN componente ON expediente_detail.componente = componente.id
+                                INNER JOIN categoria ON componente.categoria = categoria.id
                           WHERE expediente_detail.expediente = {$intIDExpediente}
                             AND categoria.id = 2";
-            $result = mysqli_query($conn, $strQuery);
+            $result = executeQuery($strQuery);
             if (!empty($result)) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $arrColaborador[$intColaborador]["DETALLE_SOFTWARE"][$row["iddetail"]]["ID_COMPONENTE"] = $row["idcomponente"];
@@ -387,121 +374,103 @@ class expediente_model
                     $arrColaborador[$intColaborador]["DETALLE_SOFTWARE"][$row["iddetail"]]["VERSION"] = $row["version"];
                 }
             }
-
-            mysqli_close($conn);
         }
         return $arrColaborador;
     }
 
     public function getArea()
     {
-        $conn = getConexion();
         $arrArea = array();
         $strQuery = "SELECT DISTINCT area.id, 
                             area.nombre 
                        FROM expedientes 
-                            INNER JOIN colaborador 
-                                    ON expedientes.colaborador = colaborador.id
-                            INNER JOIN area 
-                                    ON colaborador.area = area.id
+                            INNER JOIN colaborador ON expedientes.colaborador = colaborador.id
+                            INNER JOIN area ON colaborador.area = area.id
                       ORDER BY area.nombre";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrArea[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
 
-        mysqli_close($conn);
         return $arrArea;
     }
 
     public function getTipoEquipo()
     {
-        $conn = getConexion();
         $arrTipoEquipo = array();
         $strQuery = "SELECT id, nombre FROM tipoequipo ORDER BY nombre";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrTipoEquipo[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
-
-        mysqli_close($conn);
         return $arrTipoEquipo;
     }
 
     public function getComponenteHD()
     {
-        $conn = getConexion();
         $arrComponenteHD = array();
         $strQuery = "SELECT id, nombre FROM componente WHERE categoria = 1 ORDER BY nombre";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrComponenteHD[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
 
-        mysqli_close($conn);
         return $arrComponenteHD;
     }
 
     public function getComponenteSW()
     {
-        $conn = getConexion();
         $arrComponenteSW = array();
         $strQuery = "SELECT id, nombre FROM componente WHERE categoria = 2 ORDER BY nombre";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrComponenteSW[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
 
-        mysqli_close($conn);
         return $arrComponenteSW;
     }
 
     public function getComponentePL()
     {
-        $conn = getConexion();
         $arrComponentePL = array();
         $strQuery = "SELECT id, nombre FROM componente WHERE categoria = 5 ORDER BY nombre";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrComponentePL[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
 
-        mysqli_close($conn);
         return $arrComponentePL;
     }
 
     public function insertExpDetail($intIDExpediente, $intComponente, $strMarca = "", $strValor = "", $intPago = 0, $intVersion = 0, $strSerie = "", $strModelo = "", $strLinea = "", $strUsuario = "", $strOperador = "", $intAnio = 0, $intUser)
     {
         if ($intIDExpediente > 0 && $intComponente > 0  && $intUser > 0) {
-            $conn = getConexion();
             $strQuery = "INSERT INTO expediente_detail (expediente, componente, marca, valor, pago, version, serie, modelo, linea, anio, usuario, operador, add_fecha, add_user) VALUES ({$intIDExpediente},{$intComponente},'{$strMarca}','{$strValor}',{$intPago},'{$intVersion}','{$strSerie}','{$strModelo}','{$strLinea}',{$intAnio},'{$strUsuario}','{$strOperador}',now(), {$intUser})";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function deleteExpDetail($intIDExpediente, $intIDExpDetail)
     {
         if ($intIDExpediente > 0 && $intIDExpDetail) {
-            $conn = getConexion();
             $strQuery = "DELETE FROM expediente_detail WHERE id = {$intIDExpDetail} AND expediente = {$intIDExpediente}";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function updateExpDetail($intIDExpDetail, $intIDExpediente, $intComponente, $strMarca = "", $strValor = "", $intPago = 0, $intVersion = 0, $strSerie = "", $strModelo = "", $strLinea = "", $intAnio = 0, $strUsuario = "", $strOperador = "", $intUser)
     {
         if ($intIDExpDetail > 0 && $intIDExpediente > 0 && $intComponente > 0  && $intUser > 0) {
-            $conn = getConexion();
             $strMarcaLabel = ($strMarca != '') ? "marca= '{$strMarca}'," : "";
             $strQuery = "UPDATE expediente_detail 
                             SET componente = {$intComponente}, 
@@ -519,30 +488,28 @@ class expediente_model
                                 mod_fecha = now()
                           WHERE expediente = {$intIDExpediente} 
                             AND id = {$intIDExpDetail}";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function updateComentarioExp($intExpediente, $strComentario)
     {
         if ($intExpediente > 0) {
-            $conn = getConexion();
             $strQuery = "UPDATE expedientes SET comentario = '{$strComentario}' WHERE id = {$intExpediente}";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function updateDatosEquipo($intExpediente, $strNombreEquipo = "", $strDireccionIP = "", $strDominio = "", $strUsuario = "")
     {
         if ($intExpediente > 0) {
-            $conn = getConexion();
             $strQuery = "UPDATE expedientes 
                             SET nombreequipo = '{$strNombreEquipo}',
                                 direccionip = '{$strDireccionIP}',
                                 dominio = '{$strDominio}',
                                 usuario = '{$strUsuario}'
                           WHERE id = {$intExpediente}";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 }
@@ -1561,9 +1528,9 @@ class expediente_view
                                 <div class="image">
                                     <img src="images/user.png" class="img-circle elevation-2">
                                 </div>
-                                <div class="info">
-                                    <a href="#" class="d-block"><b><?php print $this->arrRolUser["NAME"]; ?></b></a>
-                                </div>
+                                <div class="info" style="color:white;">
+                                    <b><?php print $this->arrRolUser["NAME"]; ?></b>
+                                </div>  
                             </div>
 
                             <?php draMenu("expediente.php", 1); ?>

@@ -90,47 +90,42 @@ class categoria_model
     public function insertcategoria($strNombre, $intUser)
     {
         if ($strNombre != '' && $intUser > 0) {
-            $conn = getConexion();
             $strQuery = "INSERT INTO categoria (nombre, add_fecha, add_user) VALUES ('{$strNombre}', now(), {$intUser})";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function deletecategoria($intCategoria)
     {
         if ($intCategoria > 0) {
-            $conn = getConexion();
             $strQuery = "DELETE FROM categoria WHERE id = {$intCategoria}";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function updatecategoria($intCategoria, $strNombre, $intUser)
     {
         if ($intCategoria > 0 && $strNombre != '' && $intUser > 0) {
-            $conn = getConexion();
             $strQuery = "UPDATE categoria 
                             SET nombre = '{$strNombre}',
                                 mod_fecha = now(),
                                 mod_user = {$intUser} 
                           WHERE id = {$intCategoria}";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function getcategoria()
     {
-        $conn = getConexion();
         $arrCategoria = array();
         $strQuery = "SELECT id, nombre FROM categoria ORDER BY nombre";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrCategoria[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
 
-        mysqli_close($conn);
         return $arrCategoria;
     }
 }
@@ -267,8 +262,8 @@ class categoria_view
                             <div class="image">
                                 <img src="images/user.png" class="img-circle elevation-2">
                             </div>
-                            <div class="info">
-                                <a href="#" class="d-block"><b><?php print $this->arrRolUser["NAME"]; ?></b></a>
+                            <div class="info" style="color:white;">
+                                <b><?php print $this->arrRolUser["NAME"]; ?></b>
                             </div>
                         </div>
                         <?php draMenu("categoria.php", 2); ?>

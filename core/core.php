@@ -17,14 +17,22 @@ function getConexion()
     }
 }
 
+function executeQuery($strQuery){
+    if( $strQuery!='' ){
+        $conn = getConexion();
+        $result = mysqli_query($conn, $strQuery);
+        mysqli_close($conn);
+        return $result;
+    }
+}
+
 function auth_user($username, $password)
 {
-    $conn = getConexion();
     $arrValues = array();
 
-    if ($username != '') {
+    if ( $username != '' ) {
         $strQuery = "SELECT password FROM usuarios WHERE nombre = '{$username}'";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrValues["PASSWORD"] = $row["password"];
@@ -38,12 +46,12 @@ function auth_user($username, $password)
             $_SESSION['user_id'] = $username;
             $strValueSession = $_SESSION['user_id'];
             insertSession($strValueSession);
-            return true;
+            return 1;
         } else {
-            return false;
+            return 2;
         }
     } else {
-        return false;
+        return 3;
     }
 }
 
@@ -60,9 +68,8 @@ function convertDateMysql($strFecha)
 function insertSession($strSession)
 {
     if ($strSession != '') {
-        $conn = getConexion();
         $strQuery = "INSERT INTO session_user (nombre, add_user, add_fecha) VALUES ('{$strSession}', 1, now())";
-        mysqli_query($conn, $strQuery);
+        executeQuery($strQuery);
     }
 }
 
@@ -70,7 +77,6 @@ function getRolUserSession($sessionName)
 {
     $strRolUserSession = "";
     if ($sessionName != '') {
-        $conn = getConexion();
         $strQuery = "SELECT tipo_usuario.nombre
                        FROM usuarios 
                             INNER JOIN session_user 
@@ -78,7 +84,7 @@ function getRolUserSession($sessionName)
                             INNER JOIN tipo_usuario 
                                     ON usuarios.tipo = tipo_usuario.id
                       WHERE session_user.nombre = '{$sessionName}'";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $strRolUserSession = $row["nombre"];
@@ -93,13 +99,12 @@ function getPuestoUserSession($sessionName)
 {
     $strPuestoUserSession = "";
     if ($sessionName != '') {
-        $conn = getConexion();
         $strQuery = "SELECT usuarios.puesto
                        FROM usuarios 
                             INNER JOIN session_user 
                                     ON session_user.nombre = usuarios.nombre 
                       WHERE session_user.nombre = '{$sessionName}'";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $strPuestoUserSession = $row["puesto"];
@@ -114,13 +119,12 @@ function getIDUserSession($sessionName)
 {
     $intIDUserSession = "";
     if ($sessionName != '') {
-        $conn = getConexion();
         $strQuery = "SELECT usuarios.id
                        FROM usuarios 
                             INNER JOIN session_user 
                                     ON session_user.nombre = usuarios.nombre 
                       WHERE session_user.nombre = '{$sessionName}'";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $intIDUserSession = $row["id"];
@@ -135,9 +139,8 @@ function getNombreColaborador($intColaborador)
 {
     if ($intColaborador > 0) {
         $strNombre = "";
-        $conn = getConexion();
         $strQuery = "SELECT CONCAT(nombres,' ',apellidos) nombrecompleto FROM colaborador WHERE id = {$intColaborador}";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $strNombre = $row["nombrecompleto"];
@@ -152,9 +155,8 @@ function getNombreComponente($intComponente)
 {
     if ($intComponente > 0) {
         $strNombre = "";
-        $conn = getConexion();
         $strQuery = "SELECT nombre FROM componente WHERE id = {$intComponente}";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $strNombre = $row["nombre"];

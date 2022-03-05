@@ -106,17 +106,15 @@ class colaborador_model
     public function getIDExpedienteColaborador($intColaborador)
     {
         if ($intColaborador > 0) {
-            $conn = getConexion();
             $intIDExpediente = 0;
             $strQueryExp = "SELECT id FROM expedientes WHERE colaborador = {$intColaborador}";
-            $result = mysqli_query($conn, $strQueryExp);
+            $result = executeQuery($strQueryExp);
             if (!empty($result)) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $intIDExpediente = $row["id"];
                 }
             }
 
-            mysqli_close($conn);
             return $intIDExpediente;
         }
     }
@@ -124,47 +122,43 @@ class colaborador_model
     public function insertcolaborador($strNombres, $strApellidos, $intCIF, $strPuesto, $intArea, $intActivo, $intUser)
     {
         if ($strNombres != '' && $strApellidos != '' && $intCIF > 0 && $strPuesto != '' && $intArea > 0 && $intUser > 0) {
-            $conn = getConexion();
             $strQuery = "INSERT INTO colaborador (nombres, apellidos, cif, puesto, area, activo, add_fecha, add_user) VALUES ('{$strNombres}', '{$strApellidos}', {$intCIF}, '{$strPuesto}', {$intArea}, {$intActivo}, now(), {$intUser})";
-            mysqli_query($conn, $strQuery);
-            //print $strQuery;
+            executeQuery($strQuery);
 
             $intIDColaborador = 0;
             $strQueryCol = "SELECT id FROM colaborador WHERE nombres = '{$strNombres}' AND apellidos = '{$strApellidos}' AND cif = '{$intCIF}'";
-            $result = mysqli_query($conn, $strQueryCol);
+            $result = executeQuery($strQueryCol);
             if (!empty($result)) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $intIDColaborador = $row["id"];
                 }
             }
 
-            //Crear evaluacion
+            //Crear expediente
             $strQueryExp = "INSERT INTO expedientes (colaborador, add_user, add_fecha) VALUES ({$intIDColaborador},{$intUser},NOW())";
-            mysqli_query($conn, $strQueryExp);
+            executeQuery($strQueryExp);
         }
     }
 
     public function deletecolaborador($intColaborador)
     {
         if ($intColaborador > 0) {
-            $conn = getConexion();
             $strQuery = "DELETE FROM colaborador WHERE id = {$intColaborador}";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
 
             $intIDExpediente = $this->getIDExpedienteColaborador($intColaborador);
             //Eliminar detail del expediente
             $strQueryDetail = "DELETE FROM expediente_detail WHERE expediente = {$intIDExpediente}";
-            mysqli_query($conn, $strQueryDetail);
+            executeQuery($strQueryDetail);
 
             $strQueryMaster = "DELETE FROM expedientes WHERE id = {$intIDExpediente}";
-            mysqli_query($conn, $strQueryMaster);
+            executeQuery($strQueryMaster);
         }
     }
 
     public function updatecolaborador($intColaborador, $strNombres, $strApellidos, $intCIF, $strPuesto, $intArea, $intActivo, $intUser)
     {
         if ($intColaborador > 0 && $strNombres != '' && $strApellidos != '' && $intCIF > 0 && $strPuesto != '' && $intArea > 0 && $intUser > 0) {
-            $conn = getConexion();
             $strQuery = "UPDATE colaborador 
                             SET nombres = '{$strNombres}',
                                 apellidos = '{$strApellidos}',
@@ -175,7 +169,7 @@ class colaborador_model
                                 mod_fecha = now(),
                                 mod_user = {$intUser} 
                           WHERE id = {$intColaborador}";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
@@ -183,7 +177,6 @@ class colaborador_model
     {
 
         $strWhereArea = ($intArea > 0) ? "WHERE area.id = {$intArea}" : "";
-        $conn = getConexion();
         $arrColaborador = array();
         $strQuery = "SELECT colaborador.id,
                             colaborador.nombres,
@@ -194,11 +187,10 @@ class colaborador_model
                             area.nombre nombrearea,
                             colaborador.activo
                        FROM colaborador
-                            INNER JOIN area 
-                                    ON colaborador.area = area.id
+                            INNER JOIN area ON colaborador.area = area.id
                             {$strWhereArea}
                       ORDER BY area.nombre, colaborador.nombres";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrColaborador[$row["id"]]["NOMBRES"] = $row["nombres"];
@@ -211,23 +203,20 @@ class colaborador_model
             }
         }
 
-        mysqli_close($conn);
         return $arrColaborador;
     }
 
     public function getArea()
     {
-        $conn = getConexion();
         $arrArea = array();
         $strQuery = "SELECT id, nombre FROM area ORDER BY nombre";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrArea[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
 
-        mysqli_close($conn);
         return $arrArea;
     }
 }
@@ -550,8 +539,8 @@ class colaborador_view
                             <div class="image">
                                 <img src="images/user.png" class="img-circle elevation-2">
                             </div>
-                            <div class="info">
-                                <a href="#" class="d-block"><b><?php print $this->arrRolUser["NAME"]; ?></b></a>
+                            <div class="info" style="color:white;">
+                                <b><?php print $this->arrRolUser["NAME"]; ?></b>
                             </div>
                         </div>
 

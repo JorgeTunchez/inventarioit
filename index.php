@@ -33,11 +33,7 @@ class login_controller
             $strPassword = isset($_POST['loginPassword']) ? trim($_POST['loginPassword']) : "";
             $arrReturn = array();
             $boolRedirect = $this->objModel->redirect_dashboard($strUser, $strPassword);
-            if ($boolRedirect) {
-                $arrReturn["boolAuthRedirect"] = "Y";
-            } else {
-                $arrReturn["boolAuthRedirect"] = "N";
-            }
+            $arrReturn["boolAuthRedirect"] = $boolRedirect;
             print json_encode($arrReturn);
             exit();
         }
@@ -159,11 +155,16 @@ class login_view
                             },
                             success: function(data) {
                                 $("#btnInicioSession").prop('disabled', false);
-                                if (data.boolAuthRedirect == "Y") {
+                                if (data.boolAuthRedirect == "1") {
                                     $("#divShowLoadingGeneralBig").hide();
                                     location.href = "menu.php";
-                                } else {
-                                    alert("Datos incorrectos y/o usuario inactivo");
+                                } else if (data.boolAuthRedirect == "2") {
+                                    alert("Password invalido");
+                                    $("#divShowLoadingGeneralBig").hide();
+                                    $("#loginUsername").val('');
+                                    $("#loginPassword").val('');
+                                } else if (data.boolAuthRedirect == "3") {
+                                    alert("Usuario y/o password invalidos");
                                     $("#divShowLoadingGeneralBig").hide();
                                     $("#loginUsername").val('');
                                     $("#loginPassword").val('');

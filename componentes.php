@@ -92,25 +92,22 @@ class componentes_model
     public function insertcomponente($strNombre, $intCategoria, $intTI, $intUser)
     {
         if ($strNombre != '' && $intTI > 0 && $intCategoria > 0 &&  $intUser > 0) {
-            $conn = getConexion();
             $strQuery = "INSERT INTO componente (nombre, categoria, tipo_identificador, add_fecha, add_user) VALUES ('{$strNombre}', {$intCategoria}, {$intTI}, now(), {$intUser})";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function deletecomponente($intComponente)
     {
         if ($intComponente > 0) {
-            $conn = getConexion();
             $strQuery = "DELETE FROM componente WHERE id = {$intComponente}";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function updatecomponente($intComponente, $intCategoria, $intTI, $strNombre, $intUser)
     {
         if ($intComponente > 0 && $intCategoria > 0 && $intTI > 0  && $strNombre != '' && $intUser > 0) {
-            $conn = getConexion();
             $strQuery = "UPDATE componente 
                             SET nombre = '{$strNombre}',
                                 categoria = {$intCategoria},
@@ -118,13 +115,12 @@ class componentes_model
                                 mod_fecha = now(),
                                 mod_user = {$intUser} 
                           WHERE id = {$intComponente}";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function getcomponente()
     {
-        $conn = getConexion();
         $arrComponente = array();
         $strQuery = "SELECT componente.id, 
                             componente.nombre nombrecomponente,
@@ -133,12 +129,10 @@ class componentes_model
                             tipo_identificador.id idtipo,
                             tipo_identificador.nombre nombretipo
                        FROM componente
-                            INNER JOIN categoria 
-                                    ON componente.categoria = categoria.id
-                            INNER JOIN tipo_identificador 
-                                    ON componente.tipo_identificador = tipo_identificador.id
+                            INNER JOIN categoria ON componente.categoria = categoria.id
+                            INNER JOIN tipo_identificador ON componente.tipo_identificador = tipo_identificador.id
                       ORDER BY componente.categoria, componente.nombre";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrComponente[$row["id"]]["NOMBRE"] = $row["nombrecomponente"];
@@ -149,39 +143,34 @@ class componentes_model
             }
         }
 
-        mysqli_close($conn);
         return $arrComponente;
     }
 
     public function getcategoria()
     {
-        $conn = getConexion();
         $arrCategoria = array();
         $strQuery = "SELECT id, nombre FROM categoria ORDER BY nombre";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrCategoria[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
 
-        mysqli_close($conn);
         return $arrCategoria;
     }
 
     public function getIdentificador()
     {
-        $conn = getConexion();
         $arrTipoIdentificador = array();
         $strQuery = "SELECT id, nombre FROM tipo_identificador ORDER BY nombre";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrTipoIdentificador[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
 
-        mysqli_close($conn);
         return $arrTipoIdentificador;
     }
 }
@@ -352,8 +341,8 @@ class componentes_view
                             <div class="image">
                                 <img src="images/user.png" class="img-circle elevation-2">
                             </div>
-                            <div class="info">
-                                <a href="#" class="d-block"><b><?php print $this->arrRolUser["NAME"]; ?></b></a>
+                            <div class="info" style="color:white;">
+                                <b><?php print $this->arrRolUser["NAME"]; ?></b>
                             </div>
                         </div>
                         <?php draMenu("componentes.php", 2); ?>

@@ -90,47 +90,42 @@ class area_model
     public function insertArea($strNombre, $intUser)
     {
         if ($strNombre != '' && $intUser > 0) {
-            $conn = getConexion();
             $strQuery = "INSERT INTO area (nombre, add_fecha, add_user) VALUES ('{$strNombre}', now(), {$intUser})";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function deleteArea($intArea)
     {
         if ($intArea > 0) {
-            $conn = getConexion();
             $strQuery = "DELETE FROM area WHERE id = {$intArea}";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function updateArea($intArea, $strNombre, $intUser)
     {
         if ($intArea > 0 && $strNombre != '' && $intUser > 0) {
-            $conn = getConexion();
             $strQuery = "UPDATE area 
                             SET nombre = '{$strNombre}',
                                 mod_fecha = now(),
                                 mod_user = {$intUser} 
                           WHERE id = {$intArea}";
-            mysqli_query($conn, $strQuery);
+            executeQuery($strQuery);
         }
     }
 
     public function getArea()
     {
-        $conn = getConexion();
         $arrArea = array();
         $strQuery = "SELECT id, nombre FROM area ORDER BY nombre";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrArea[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
 
-        mysqli_close($conn);
         return $arrArea;
     }
 }
@@ -268,8 +263,8 @@ class area_view
                             <div class="image">
                                 <img src="images/user.png" class="img-circle elevation-2">
                             </div>
-                            <div class="info">
-                                <a href="#" class="d-block"><b><?php print $this->arrRolUser["NAME"]; ?></b></a>
+                            <div class="info" style="color:white;">
+                                <b><?php print $this->arrRolUser["NAME"]; ?></b>
                             </div>
                         </div>
                         <?php draMenu("area.php", 2); ?>

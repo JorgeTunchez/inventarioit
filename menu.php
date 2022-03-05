@@ -66,17 +66,15 @@ class menu_model
 
     public function getConteoExpedientes()
     {
-        $conn = getConexion();
         $intConteo = 0;
         $strQuery = "SELECT COUNT(id) conteo FROM expedientes";
-        $result = mysqli_query($conn, $strQuery);
+        $result = executeQuery($strQuery);
         if (!empty($result)) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $intConteo = $row["conteo"];
             }
         }
 
-        mysqli_close($conn);
         return $intConteo;
     }
 }
@@ -218,7 +216,7 @@ class menu_view
                 <!-- Main Sidebar Container -->
                 <aside class="main-sidebar sidebar-dark-primary elevation-4">
                     <!-- Brand Logo -->
-                    <a href="menu.php" class="brand-link">
+                    <a href="menu.php" class="brand-link text-center">
                         <span class="brand-text font-weight-light">Inventario IT</span>
                     </a>
 
@@ -229,8 +227,8 @@ class menu_view
                             <div class="image">
                                 <img src="images/user.png" class="img-circle elevation-2">
                             </div>
-                            <div class="info">
-                                <a href="#" class="d-block"><b><?php print $this->arrRolUser["NAME"]; ?></b></a>
+                            <div class="info" style="color:white;">
+                                <b><?php print $this->arrRolUser["NAME"]; ?></b>
                             </div>
                         </div>
 
@@ -245,13 +243,10 @@ class menu_view
                     <div class="content-header">
                         <div class="container-fluid">
                             <div class="row mb-2">
-                                <div class="col-sm-6">
-                                    <h1 class="m-0 text-dark">Menu</h1>
-                                </div><!-- /.col -->
-                            </div><!-- /.row -->
+                                <div class="col-sm-6"></div>
+                            </div>
                         </div><!-- /.container-fluid -->
-                    </div>
-                    <!-- /.content-header -->
+                    </div><!-- /.content-header -->
 
                     <!-- Main content -->
                     <section class="content">
