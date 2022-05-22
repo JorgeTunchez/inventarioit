@@ -63,21 +63,21 @@ class area_controller
 
     public function process()
     {
-        reset($_POST);
-        while ($arrTMP = each($_POST)) {
-            $arrExplode = explode("_", $arrTMP['key']);
+        if( isset($_POST['process']) && $_POST['process'] == 'Y' ){
+            foreach($_POST as $key => $val){
+                $arrExplode = explode("_", $key);
+                if ($arrExplode[0] == "hdnArea") {
+                    $intArea = $arrExplode[1];
+                    $strAccion = isset($_POST["hdnArea_{$intArea}"]) ? trim($_POST["hdnArea_{$intArea}"]) : '';
+                    $strNombre = isset($_POST["txtNombre_{$intArea}"]) ? trim($_POST["txtNombre_{$intArea}"]) : '';
 
-            if ($arrExplode[0] == "hdnArea") {
-                $intArea = $arrExplode[1];
-                $strAccion = isset($_POST["hdnArea_{$intArea}"]) ? trim($_POST["hdnArea_{$intArea}"]) : '';
-                $strNombre = isset($_POST["txtNombre_{$intArea}"]) ? trim($_POST["txtNombre_{$intArea}"]) : '';
-
-                if ($strAccion == "A") {
-                    $this->objModel->insertArea($strNombre, $this->arrRolUser["ID"]);
-                } elseif ($strAccion == "D") {
-                    $this->objModel->deleteArea($intArea);
-                } elseif ($strAccion == "E") {
-                    $this->objModel->updateArea($intArea, $strNombre, $this->arrRolUser["ID"]);
+                    if ($strAccion == "A") {
+                        $this->objModel->insertArea($strNombre, $this->arrRolUser["ID"]);
+                    } elseif ($strAccion == "D") {
+                        $this->objModel->deleteArea($intArea);
+                    } elseif ($strAccion == "E") {
+                        $this->objModel->updateArea($intArea, $strNombre, $this->arrRolUser["ID"]);
+                    }
                 }
             }
         }
@@ -309,12 +309,11 @@ class area_view
                                                         <?php
                                                         $arrArea = $this->objModel->getArea();
                                                         $intConteo = 0;
-                                                        reset($arrArea);
-                                                        while ($rTMP = each($arrArea)) {
+                                                        foreach( $arrArea as $key => $val ){
                                                             $intConteo++;
-                                                            $intID = $rTMP["key"];
-                                                            $strNombre = trim($rTMP["value"]["NOMBRE"]);
-                                                        ?>
+                                                            $intID = $key;
+                                                            $strNombre = trim($val["NOMBRE"]);
+                                                            ?>
                                                             <script>
                                                                 arrAreas.push('<?php print $strNombre; ?>');
                                                             </script>
@@ -496,22 +495,26 @@ class area_view
 
                 function checkForm() {
                     var response = confirm("Desea confirmar los cambios?");
-                    if (response == true) {
+                    if( response == true ) {
                         var boolError = false;
-                        $("input[name*='txtNombre_']").each(function() {
-                            if ($(this).val() == '' || arrAreas.includes($(this).val())) {
-                                $(this).css('background-color', '#f4d0de');
-                                boolError = true;
-                            } else {
-                                $(this).css('background-color', '');
+                        $("input[name*='hdnArea_']").each(function() {
+                            var arrSplit = $(this).attr("name").split("_");
+                            var accion = $(this).val();
+                            if( (accion =='A') || (accion =='E') ){
+                                var valor = $("#txtNombre_"+arrSplit[1]).val();
+                                if (valor == '' || arrAreas.includes(valor)) {
+                                    $("#txtNombre_"+arrSplit[1]).css('background-color', '#f4d0de');
+                                    boolError = true;
+                                } else {
+                                    $(this).css('background-color', '');
+                                }
                             }
                         });
 
-                        if (boolError == false) {
-                            var objSerialized = $("#tblAreas").find("select, input").serialize();
+                        if( boolError == false ) {
                             $.ajax({
                                 url: "area.php",
-                                data: objSerialized,
+                                data:  $("#tblAreas").find("select, input").serialize() + "&process=Y",
                                 type: "POST",
                                 beforeSend: function() {
                                     $("#divShowLoadingGeneralBig").show();
