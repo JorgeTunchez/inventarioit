@@ -3,7 +3,7 @@ require_once("core/core.php");
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 session_start();
-if (isset($_SESSION['user_id'])) {
+if ( isset($_SESSION['user_id']) ) {
     $strRolUserSession = getRolUserSession($_SESSION['user_id']);
     $intIDUserSession = getIDUserSession($_SESSION['user_id']);
 
@@ -28,7 +28,6 @@ $objController->drawContentController();
 
 class colaborador_controller
 {
-
     private $objModel;
     private $objView;
     private $arrRolUser;
@@ -73,28 +72,28 @@ class colaborador_controller
 
     public function process()
     {
-
-        reset($_POST);
-        while ($arrTMP = each($_POST)) {
-            $arrExplode = explode("_", $arrTMP['key']);
-
-            if ($arrExplode[0] == "hdnColaborador") {
-                $intColaborador = $arrExplode[1];
-                $strAccion = isset($_POST["hdnColaborador_{$intColaborador}"]) ? trim($_POST["hdnColaborador_{$intColaborador}"]) : '';
-                $strNombres = isset($_POST["txtNombres_{$intColaborador}"]) ? trim($_POST["txtNombres_{$intColaborador}"]) : '';
-                $strApellidos = isset($_POST["txtApellidos_{$intColaborador}"]) ? trim($_POST["txtApellidos_{$intColaborador}"]) : '';
-                $intCIF = isset($_POST["txtCIF_{$intColaborador}"]) ? intval($_POST["txtCIF_{$intColaborador}"]) : 0;
-                $strPuesto = isset($_POST["txtPuesto_{$intColaborador}"]) ? trim($_POST["txtPuesto_{$intColaborador}"]) : '';
-                $intArea = isset($_POST["selectArea_{$intColaborador}"]) ? intval($_POST["selectArea_{$intColaborador}"]) : 0;
-                $intActivo = isset($_POST["selectActivo_{$intColaborador}"]) ? intval($_POST["selectActivo_{$intColaborador}"]) : 0;
-
-                if ($strAccion == "A") {
-                    $this->objModel->insertcolaborador($strNombres, $strApellidos, $intCIF, $strPuesto, $intArea, $intActivo,  $this->arrRolUser["ID"]);
-                } elseif ($strAccion == "D") {
-                    $this->objModel->deletecolaborador($intColaborador);
-                } elseif ($strAccion == "E") {
-                    $this->objModel->updatecolaborador($intColaborador, $strNombres, $strApellidos, $intCIF, $strPuesto, $intArea, $intActivo, $this->arrRolUser["ID"]);
+        if( isset($_POST['process']) && $_POST['process'] == 'Y' ){
+            foreach($_POST as $key => $val){
+                $arrExplode = explode("_", $key);
+                if ($arrExplode[0] == "hdnColaborador") {
+                    $intColaborador = $arrExplode[1];
+                    $strAccion = isset($_POST["hdnColaborador_{$intColaborador}"]) ? trim($_POST["hdnColaborador_{$intColaborador}"]) : '';
+                    $strNombres = isset($_POST["txtNombres_{$intColaborador}"]) ? trim($_POST["txtNombres_{$intColaborador}"]) : '';
+                    $strApellidos = isset($_POST["txtApellidos_{$intColaborador}"]) ? trim($_POST["txtApellidos_{$intColaborador}"]) : '';
+                    $intCIF = isset($_POST["txtCIF_{$intColaborador}"]) ? intval($_POST["txtCIF_{$intColaborador}"]) : 0;
+                    $strPuesto = isset($_POST["txtPuesto_{$intColaborador}"]) ? trim($_POST["txtPuesto_{$intColaborador}"]) : '';
+                    $intArea = isset($_POST["selectArea_{$intColaborador}"]) ? intval($_POST["selectArea_{$intColaborador}"]) : 0;
+                    $intActivo = isset($_POST["selectActivo_{$intColaborador}"]) ? intval($_POST["selectActivo_{$intColaborador}"]) : 0;
+    
+                    if ($strAccion == "A") {
+                        $this->objModel->insertcolaborador($strNombres, $strApellidos, $intCIF, $strPuesto, $intArea, $intActivo,  $this->arrRolUser["ID"]);
+                    } elseif ($strAccion == "D") {
+                        $this->objModel->deletecolaborador($intColaborador);
+                    } elseif ($strAccion == "E") {
+                        $this->objModel->updatecolaborador($intColaborador, $strNombres, $strApellidos, $intCIF, $strPuesto, $intArea, $intActivo, $this->arrRolUser["ID"]);
+                    }
                 }
+    
             }
         }
     }
@@ -105,7 +104,7 @@ class colaborador_model
 
     public function getIDExpedienteColaborador($intColaborador)
     {
-        if ($intColaborador > 0) {
+        if( $intColaborador > 0 ) {
             $intIDExpediente = 0;
             $strQueryExp = "SELECT id FROM expedientes WHERE colaborador = {$intColaborador}";
             $result = executeQuery($strQueryExp);
@@ -121,7 +120,7 @@ class colaborador_model
 
     public function insertcolaborador($strNombres, $strApellidos, $intCIF, $strPuesto, $intArea, $intActivo, $intUser)
     {
-        if ($strNombres != '' && $strApellidos != '' && $intCIF > 0 && $strPuesto != '' && $intArea > 0 && $intUser > 0) {
+        if( $strNombres != '' && $strApellidos != '' && $intCIF > 0 && $strPuesto != '' && $intArea > 0 && $intUser > 0 ) {
             $strQuery = "INSERT INTO colaborador (nombres, apellidos, cif, puesto, area, activo, add_fecha, add_user) VALUES ('{$strNombres}', '{$strApellidos}', {$intCIF}, '{$strPuesto}', {$intArea}, {$intActivo}, now(), {$intUser})";
             executeQuery($strQuery);
 
@@ -142,7 +141,7 @@ class colaborador_model
 
     public function deletecolaborador($intColaborador)
     {
-        if ($intColaborador > 0) {
+        if( $intColaborador > 0 ) {
             $strQuery = "DELETE FROM colaborador WHERE id = {$intColaborador}";
             executeQuery($strQuery);
 
@@ -158,7 +157,7 @@ class colaborador_model
 
     public function updatecolaborador($intColaborador, $strNombres, $strApellidos, $intCIF, $strPuesto, $intArea, $intActivo, $intUser)
     {
-        if ($intColaborador > 0 && $strNombres != '' && $strApellidos != '' && $intCIF > 0 && $strPuesto != '' && $intArea > 0 && $intUser > 0) {
+        if( $intColaborador > 0 && $strNombres != '' && $strApellidos != '' && $intCIF > 0 && $strPuesto != '' && $intArea > 0 && $intUser > 0 ) {
             $strQuery = "UPDATE colaborador 
                             SET nombres = '{$strNombres}',
                                 apellidos = '{$strApellidos}',
@@ -175,7 +174,6 @@ class colaborador_model
 
     public function getColaboradores($intArea = 0)
     {
-
         $strWhereArea = ($intArea > 0) ? "WHERE area.id = {$intArea}" : "";
         $arrColaborador = array();
         $strQuery = "SELECT colaborador.id,
@@ -191,8 +189,8 @@ class colaborador_model
                             {$strWhereArea}
                       ORDER BY area.nombre, colaborador.nombres";
         $result = executeQuery($strQuery);
-        if (!empty($result)) {
-            while ($row = mysqli_fetch_assoc($result)) {
+        if( !empty($result) ) {
+            while ( $row = mysqli_fetch_assoc($result) ) {
                 $arrColaborador[$row["id"]]["NOMBRES"] = $row["nombres"];
                 $arrColaborador[$row["id"]]["APELLIDOS"] = $row["apellidos"];
                 $arrColaborador[$row["id"]]["CIF"] = $row["cif"];
@@ -211,7 +209,7 @@ class colaborador_model
         $arrArea = array();
         $strQuery = "SELECT id, nombre FROM area ORDER BY nombre";
         $result = executeQuery($strQuery);
-        if (!empty($result)) {
+        if( !empty($result) ) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $arrArea[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
@@ -236,14 +234,13 @@ class colaborador_view
     public function drawSelectAreaAll()
     {
         $arrArea = $this->objModel->getArea();
-?>
+        ?>
         <select id="selectAreaAll" name="selectAreaAll" style="text-align: center;" class="form-control">
             <?php
-            reset($arrArea);
-            while ($rTMP = each($arrArea)) {
-            ?>
-                <option value="<?php print $rTMP["key"]; ?>"><?php print $rTMP["value"]["NOMBRE"]; ?></option>
-            <?php
+            foreach($arrArea as $key => $val) {
+                ?>
+                <option value="<?php print $key; ?>"><?php print $val["NOMBRE"]; ?></option>
+                <?php
             }
             ?>
         </select>
@@ -253,15 +250,14 @@ class colaborador_view
     public function drawSelectArea($intId = 0, $intArea = 0)
     {
         $arrArea = $this->objModel->getArea();
-    ?>
+        ?>
         <select id="selectArea_<?php print $intId; ?>" name="selectArea_<?php print $intId; ?>" style="text-align: center;" class="form-control">
             <?php
-            reset($arrArea);
-            while ($rTMP = each($arrArea)) {
-                $strSelected = (($rTMP["key"] == $intArea)) ? 'selected' : '';
-            ?>
-                <option value="<?php print $rTMP["key"]; ?>" <?php print $strSelected; ?>><?php print $rTMP["value"]["NOMBRE"]; ?></option>
-            <?php
+            foreach($arrArea as $key => $val){
+                $strSelected = ($key == $intArea) ? 'selected' : '';
+                ?>
+                <option value="<?php print $key; ?>" <?php print $strSelected; ?>><?php print $val["NOMBRE"]; ?></option>
+                <?php
             }
             ?>
         </select>
@@ -280,9 +276,9 @@ class colaborador_view
 
     public function drawContentSearch($intArea = 0)
     {
-        if ($intArea > 0) {
+        if ( $intArea > 0 ) {
             $arrColaborador = $this->objModel->getColaboradores($intArea);
-        ?>
+            ?>
             <div id="no-more-tables">
                 <table class="table table-sm table-hover table-condensed" id="tblColaborador">
                     <thead class="cf">
@@ -300,19 +296,18 @@ class colaborador_view
                     <tbody>
                         <?php
                         $intConteo = 0;
-                        reset($arrColaborador);
-                        while ($rTMP = each($arrColaborador)) {
+                        foreach( $arrColaborador as $key => $val ){
                             $intConteo++;
-                            $intID = $rTMP["key"];
-                            $strNombres = isset($rTMP["value"]["NOMBRES"]) ? $rTMP["value"]["NOMBRES"] : "";
-                            $strApellidos = isset($rTMP["value"]["APELLIDOS"]) ? $rTMP["value"]["APELLIDOS"] : "";
-                            $intCIF = isset($rTMP["value"]["CIF"]) ? intval($rTMP["value"]["CIF"]) : 0;
-                            $strPuesto = isset($rTMP["value"]["PUESTO"]) ? $rTMP["value"]["PUESTO"] : "";
-                            $intArea = isset($rTMP["value"]["IDAREA"]) ? intval($rTMP["value"]["IDAREA"]) : 0;
-                            $strNombreArea = isset($rTMP["value"]["NOMBREAREA"]) ? $rTMP["value"]["NOMBREAREA"] : "";
-                            $intActivo = isset($rTMP["value"]["ACTIVO"]) ? intval($rTMP["value"]["ACTIVO"]) : 0;
+                            $intID = $key;
+                            $strNombres = isset($val["NOMBRES"]) ? $val["NOMBRES"] : "";
+                            $strApellidos = isset($val["APELLIDOS"]) ? $val["APELLIDOS"] : "";
+                            $intCIF = isset($val["CIF"]) ? intval($val["CIF"]) : 0;
+                            $strPuesto = isset($val["PUESTO"]) ? $val["PUESTO"] : "";
+                            $intArea = isset($val["IDAREA"]) ? intval($val["IDAREA"]) : 0;
+                            $strNombreArea = isset($val["NOMBREAREA"]) ? $val["NOMBREAREA"] : "";
+                            $intActivo = isset($val["ACTIVO"]) ? intval($val["ACTIVO"]) : 0;
                             $strNombreActivo = ($intActivo == 1) ? "Si" : "No";
-                        ?>
+                            ?>
                             <tr id="trColaborador_<?php print $intID; ?>">
                                 <td data-title="No." style="text-align:center;">
                                     <h3><span class="badge badge-success"><?php print $intConteo; ?></span></h3>
@@ -382,14 +377,9 @@ class colaborador_view
                 </table>
                 <table class="table table-sm table-hover table-condensed">
                     <tr>
-                        <td style="text-align:center;">
-                            <button class="btn btn-success btn-block" onclick="agregarColaborador()">
-                                <i class="fa fa-plus"></i> Agregar
-                            </button>
-                        </td>
-                        <td style="text-align:center;">
-                            <button type="button" class="btn btn-success btn-block" onclick="checkForm()">
-                                <i class="fa fa-floppy-o"></i> Guardar
+                        <td class="text-center">
+                            <button class="btn btn-success" onclick="agregarColaborador()">
+                                <i class="fa fa-plus"></i> Agregar Colaborador
                             </button>
                         </td>
                     </tr>
@@ -582,6 +572,9 @@ class colaborador_view
                                                 <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                                                     <button class="btn btn-success btn-block" onclick="searchbyarea()"><i class="fa fa-search"></i> Mostrar Listado</button>
                                                 </div>
+                                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" id="btnGuardar" style="display:none;">
+                                                    <button class="btn btn-success btn-block" onclick="checkForm()"><i class="fa fa-floppy-o"></i> Guardar</button>
+                                                </div>
                                             </div>
                                         </div>
                                         <br>
@@ -746,9 +739,7 @@ class colaborador_view
                     var $td = $("<td data-title='Puesto' style='text-align:center;'><input class='form-control' type='text' id='txtPuesto_" + max + "' name='txtPuesto_" + max + "'></td>")
                     $tr.append($td);
 
-                    var $td = $("<td data-title='Area' style='text-align:center;'><select class='form-control' id='selectArea_" + max + "' name='selectArea_" + max + "' style='text-align: center;'><?php $arrArea = $this->objModel->getArea();
-                                                                                                                                                                                                        reset($arrArea);
-                                                                                                                                                                                                        while ($rTMP = each($arrArea)) { ?><option value='<?php print $rTMP["key"]; ?>'><?php print $rTMP["value"]["NOMBRE"]; ?></option><?php } ?></select></td>");
+                    var $td = $("<td data-title='Area' style='text-align:center;'><select class='form-control' id='selectArea_" + max + "' name='selectArea_" + max + "' style='text-align: center;'><?php $arrArea = $this->objModel->getArea(); foreach($arrArea as $key => $val){ ?><option value='<?php print $key; ?>'><?php print $val["NOMBRE"]; ?></option><?php } ?></select></td>");
                     $tr.append($td);
 
                     var $td = $("<td data-title='Activo' style='text-align:center;'><select class='form-control' id='selectActivo_" + max + "' name='selectActivo_" + max + "' style='text-align: center;'><option value='0'>No</option><option value='1'>Si</option></select></td>");
@@ -790,6 +781,7 @@ class colaborador_view
                             $("#divShowLoadingGeneralBig").hide();
                             $("#divContent").html('');
                             $("#divContent").html(data);
+                            $("#btnGuardar").show();
                         }
                     });
                 }
@@ -833,18 +825,17 @@ class colaborador_view
                         }
                     });
 
-                    if (boolError == false) {
-                        var objSerialized = $("#tblColaborador").find("select, input").serialize();
+                    if ( boolError == false ) {
                         $.ajax({
                             url: "colaborador.php",
-                            data: objSerialized,
+                            data:  $("#tblColaborador").find("select, input").serialize() + "&process=Y",
                             type: "POST",
                             beforeSend: function() {
                                 $("#divShowLoadingGeneralBig").show();
                             },
                             success: function(data) {
                                 $("#divShowLoadingGeneralBig").hide();
-                                location.href = "colaborador.php";
+                                searchbyarea();
                             }
                         });
                     } else {
@@ -853,9 +844,7 @@ class colaborador_view
                 }
             </script>
         </body>
-
         </html>
-
 <?php
     }
 }
