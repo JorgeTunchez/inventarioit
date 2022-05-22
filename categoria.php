@@ -63,21 +63,21 @@ class categoria_controller
 
     public function process()
     {
-        reset($_POST);
-        while ($arrTMP = each($_POST)) {
-            $arrExplode = explode("_", $arrTMP['key']);
+        if( isset($_POST['process']) && $_POST['process'] == 'Y' ){
+            foreach($_POST as $key => $val){
+                $arrExplode = explode("_", $key);
+                if ($arrExplode[0] == "hdnCategoria") {
+                    $intCategoria = $arrExplode[1];
+                    $strAccion = isset($_POST["hdnCategoria_{$intCategoria}"]) ? trim($_POST["hdnCategoria_{$intCategoria}"]) : '';
+                    $strNombre = isset($_POST["txtNombre_{$intCategoria}"]) ? trim($_POST["txtNombre_{$intCategoria}"]) : '';
 
-            if ($arrExplode[0] == "hdnCategoria") {
-                $intCategoria = $arrExplode[1];
-                $strAccion = isset($_POST["hdnCategoria_{$intCategoria}"]) ? trim($_POST["hdnCategoria_{$intCategoria}"]) : '';
-                $strNombre = isset($_POST["txtNombre_{$intCategoria}"]) ? trim($_POST["txtNombre_{$intCategoria}"]) : '';
-
-                if ($strAccion == "A") {
-                    $this->objModel->insertcategoria($strNombre, $this->arrRolUser["ID"]);
-                } elseif ($strAccion == "D") {
-                    $this->objModel->deletecategoria($intCategoria);
-                } elseif ($strAccion == "E") {
-                    $this->objModel->updatecategoria($intCategoria, $strNombre, $this->arrRolUser["ID"]);
+                    if ($strAccion == "A") {
+                        $this->objModel->insertcategoria($strNombre, $this->arrRolUser["ID"]);
+                    } elseif ($strAccion == "D") {
+                        $this->objModel->deletecategoria($intCategoria);
+                    } elseif ($strAccion == "E") {
+                        $this->objModel->updatecategoria($intCategoria, $strNombre, $this->arrRolUser["ID"]);
+                    }
                 }
             }
         }
@@ -306,12 +306,11 @@ class categoria_view
                                                         <?php
                                                         $arrCategoria = $this->objModel->getcategoria();
                                                         $intConteo = 0;
-                                                        reset($arrCategoria);
-                                                        while ($rTMP = each($arrCategoria)) {
+                                                        foreach( $arrCategoria as $key => $val ){
                                                             $intConteo++;
-                                                            $intID = $rTMP["key"];
-                                                            $strNombre = trim($rTMP["value"]["NOMBRE"]);
-                                                        ?>
+                                                            $intID = $key;
+                                                            $strNombre = trim($val["NOMBRE"]);
+                                                            ?>
                                                             <script>
                                                                 arrCategorias.push('<?php print $strNombre; ?>');
                                                             </script>
@@ -497,20 +496,24 @@ class categoria_view
 
                 function checkForm() {
                     var boolError = false;
-                    $("input[name*='txtNombre_']").each(function() {
-                        if ($(this).val() == '' || arrCategorias.includes($(this).val())) {
-                            $(this).css('background-color', '#f4d0de');
-                            boolError = true;
-                        } else {
-                            $(this).css('background-color', '');
+                    $("input[name*='hdnCategoria_']").each(function() {
+                        var arrSplit = $(this).attr("name").split("_");
+                        var accion = $(this).val();
+                        if( (accion =='A') || (accion =='E') ){
+                            var valor = $("#txtNombre_"+arrSplit[1]).val();
+                            if (valor == '' || arrCategorias.includes(valor)) {
+                                $("#txtNombre_"+arrSplit[1]).css('background-color', '#f4d0de');
+                                boolError = true;
+                            } else {
+                                $(this).css('background-color', '');
+                            }
                         }
                     });
 
                     if (boolError == false) {
-                        var objSerialized = $("#tblCategorias").find("select, input").serialize();
                         $.ajax({
                             url: "categoria.php",
-                            data: objSerialized,
+                            data:  $("#tblCategorias").find("select, input").serialize() + "&process=Y",
                             type: "POST",
                             beforeSend: function() {
                                 $("#divShowLoadingGeneralBig").show();
