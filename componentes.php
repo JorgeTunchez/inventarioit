@@ -7,13 +7,13 @@ if (isset($_SESSION['user_id'])) {
     $strRolUserSession = getRolUserSession($_SESSION['user_id']);
     $intIDUserSession = getIDUserSession($_SESSION['user_id']);
 
-    if ($strRolUserSession != '') {
+    if( $strRolUserSession != '' ) {
         $arrRolUser["ID"] = $intIDUserSession;
         $arrRolUser["NAME"] = $_SESSION['user_id'];
 
-        if ($strRolUserSession == "master") {
+        if ( $strRolUserSession == "master" ) {
             $arrRolUser["MASTER"] = true;
-        } elseif ($strRolUserSession == "normal") {
+        } elseif ( $strRolUserSession == "normal" ) {
             $arrRolUser["NORMAL"] = true;
         }
     }
@@ -52,7 +52,7 @@ class componentes_controller
 
     public function ajaxDestroySession()
     {
-        if (isset($_POST["destroSession"])) {
+        if ( isset($_POST["destroSession"]) ) {
             header("Content-Type: application/json;");
             session_destroy();
             $arrReturn["Correcto"] = "Y";
@@ -63,23 +63,24 @@ class componentes_controller
 
     public function process()
     {
-        reset($_POST);
-        while ($arrTMP = each($_POST)) {
-            $arrExplode = explode("_", $arrTMP['key']);
+        if( isset($_POST['process']) && $_POST['process'] == 'Y' ){
+            foreach( $_POST as $key => $val ){
+                $arrExplode = explode("_", $key);
 
-            if ($arrExplode[0] == "hdnComponente") {
-                $intComponente = $arrExplode[1];
-                $strAccion = isset($_POST["hdnComponente_{$intComponente}"]) ? trim($_POST["hdnComponente_{$intComponente}"]) : '';
-                $strNombre = isset($_POST["txtNombre_{$intComponente}"]) ? trim($_POST["txtNombre_{$intComponente}"]) : '';
-                $intCategoria = isset($_POST["selectCategoria_{$intComponente}"]) ? intval($_POST["selectCategoria_{$intComponente}"]) : 0;
-                $intTI = isset($_POST["selectIdentificador_{$intComponente}"]) ? intval($_POST["selectIdentificador_{$intComponente}"]) : 0;
+                if ( $arrExplode[0] == "hdnComponente" ) {
+                    $intComponente = $arrExplode[1];
+                    $strAccion = isset($_POST["hdnComponente_{$intComponente}"]) ? trim($_POST["hdnComponente_{$intComponente}"]) : '';
+                    $strNombre = isset($_POST["txtNombre_{$intComponente}"]) ? trim($_POST["txtNombre_{$intComponente}"]) : '';
+                    $intCategoria = isset($_POST["selectCategoria_{$intComponente}"]) ? intval($_POST["selectCategoria_{$intComponente}"]) : 0;
+                    $intTI = isset($_POST["selectIdentificador_{$intComponente}"]) ? intval($_POST["selectIdentificador_{$intComponente}"]) : 0;
 
-                if ($strAccion == "A") {
-                    $this->objModel->insertcomponente($strNombre, $intCategoria, $intTI,  $this->arrRolUser["ID"]);
-                } elseif ($strAccion == "D") {
-                    $this->objModel->deletecomponente($intComponente);
-                } elseif ($strAccion == "E") {
-                    $this->objModel->updatecomponente($intComponente, $intCategoria, $intTI, $strNombre, $this->arrRolUser["ID"]);
+                    if ( $strAccion == "A" ) {
+                        $this->objModel->insertcomponente($strNombre, $intCategoria, $intTI,  $this->arrRolUser["ID"]);
+                    } elseif ( $strAccion == "D" ) {
+                        $this->objModel->deletecomponente($intComponente);
+                    } elseif ( $strAccion == "E" ) {
+                        $this->objModel->updatecomponente($intComponente, $intCategoria, $intTI, $strNombre, $this->arrRolUser["ID"]);
+                    }
                 }
             }
         }
@@ -91,7 +92,7 @@ class componentes_model
 
     public function insertcomponente($strNombre, $intCategoria, $intTI, $intUser)
     {
-        if ($strNombre != '' && $intTI > 0 && $intCategoria > 0 &&  $intUser > 0) {
+        if( $strNombre != '' && $intTI > 0 && $intCategoria > 0 &&  $intUser > 0 ) {
             $strQuery = "INSERT INTO componente (nombre, categoria, tipo_identificador, add_fecha, add_user) VALUES ('{$strNombre}', {$intCategoria}, {$intTI}, now(), {$intUser})";
             executeQuery($strQuery);
         }
@@ -99,7 +100,7 @@ class componentes_model
 
     public function deletecomponente($intComponente)
     {
-        if ($intComponente > 0) {
+        if ( $intComponente > 0 ) {
             $strQuery = "DELETE FROM componente WHERE id = {$intComponente}";
             executeQuery($strQuery);
         }
@@ -107,7 +108,7 @@ class componentes_model
 
     public function updatecomponente($intComponente, $intCategoria, $intTI, $strNombre, $intUser)
     {
-        if ($intComponente > 0 && $intCategoria > 0 && $intTI > 0  && $strNombre != '' && $intUser > 0) {
+        if ( $intComponente > 0 && $intCategoria > 0 && $intTI > 0  && $strNombre != '' && $intUser > 0 ) {
             $strQuery = "UPDATE componente 
                             SET nombre = '{$strNombre}',
                                 categoria = {$intCategoria},
@@ -133,8 +134,8 @@ class componentes_model
                             INNER JOIN tipo_identificador ON componente.tipo_identificador = tipo_identificador.id
                       ORDER BY componente.categoria, componente.nombre";
         $result = executeQuery($strQuery);
-        if (!empty($result)) {
-            while ($row = mysqli_fetch_assoc($result)) {
+        if( !empty($result) ) {
+            while( $row = mysqli_fetch_assoc($result) ) {
                 $arrComponente[$row["id"]]["NOMBRE"] = $row["nombrecomponente"];
                 $arrComponente[$row["id"]]["IDCATEGORIA"] = $row["idcategoria"];
                 $arrComponente[$row["id"]]["NOMBRECATEGORIA"] = $row["nombrecategoria"];
@@ -151,8 +152,8 @@ class componentes_model
         $arrCategoria = array();
         $strQuery = "SELECT id, nombre FROM categoria ORDER BY nombre";
         $result = executeQuery($strQuery);
-        if (!empty($result)) {
-            while ($row = mysqli_fetch_assoc($result)) {
+        if ( !empty($result) ) {
+            while ( $row = mysqli_fetch_assoc($result) ) {
                 $arrCategoria[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
@@ -165,8 +166,8 @@ class componentes_model
         $arrTipoIdentificador = array();
         $strQuery = "SELECT id, nombre FROM tipo_identificador ORDER BY nombre";
         $result = executeQuery($strQuery);
-        if (!empty($result)) {
-            while ($row = mysqli_fetch_assoc($result)) {
+        if( !empty($result) ) {
+            while ( $row = mysqli_fetch_assoc($result) ) {
                 $arrTipoIdentificador[$row["id"]]["NOMBRE"] = $row["nombre"];
             }
         }
@@ -187,40 +188,38 @@ class componentes_view
         $this->arrRolUser = $arrRolUser;
     }
 
-    public function drawSelectCategoria($intId = 0, $intCategoria = 0)
+    public function drawSelectCategoria( $intId = 0, $intCategoria = 0 )
     {
         $arrCategoria = $this->objModel->getcategoria();
-?>
+        ?>
         <select id="selectCategoria_<?php print $intId; ?>" name="selectCategoria_<?php print $intId; ?>" style="text-align: center;" class="form-control">
             <?php
-            reset($arrCategoria);
-            while ($rTMP = each($arrCategoria)) {
-                $strSelected = (($rTMP["key"] == $intCategoria)) ? 'selected' : '';
-            ?>
-                <option value="<?php print $rTMP["key"]; ?>" <?php print $strSelected; ?>><?php print $rTMP["value"]["NOMBRE"]; ?></option>
+            foreach( $arrCategoria as $key => $val ){
+                $strSelected = ( $key == $intCategoria ) ? 'selected' : '';
+                ?>
+                <option value="<?php print $key; ?>" <?php print $strSelected; ?>><?php print $val["NOMBRE"]; ?></option>
             <?php
             }
             ?>
         </select>
-    <?php
+         <?php
     }
 
-    public function drawSelectTipoIdentificador($intId = 0, $intCategoria = 0)
+    public function drawSelectTipoIdentificador( $intId = 0, $intCategoria = 0 )
     {
         $arrTipoIdentificador = $this->objModel->getIdentificador();
-    ?>
+        ?>
         <select id="selectIdentificador_<?php print $intId; ?>" name="selectIdentificador_<?php print $intId; ?>" style="text-align: center;" class="form-control">
             <?php
-            reset($arrTipoIdentificador);
-            while ($rTMP = each($arrTipoIdentificador)) {
-                $strSelected = (($rTMP["key"] == $intCategoria)) ? 'selected' : '';
-            ?>
-                <option value="<?php print $rTMP["key"]; ?>" <?php print $strSelected; ?>><?php print $rTMP["value"]["NOMBRE"]; ?></option>
-            <?php
+            foreach( $arrTipoIdentificador as $key => $val ){
+                $strSelected = ( $key == $intCategoria ) ? 'selected' : '';
+                ?>
+                    <option value="<?php print $key; ?>" <?php print $strSelected; ?>><?php print $val["NOMBRE"]; ?></option>
+                <?php
             }
             ?>
         </select>
-    <?php
+        <?php
     }
 
 
@@ -389,16 +388,15 @@ class componentes_view
                                                         <?php
                                                         $arrComponente = $this->objModel->getcomponente();
                                                         $intConteo = 0;
-                                                        reset($arrComponente);
-                                                        while ($rTMP = each($arrComponente)) {
+                                                        foreach( $arrComponente as $key => $val ){
                                                             $intConteo++;
-                                                            $intID = $rTMP["key"];
-                                                            $strNombre = isset($rTMP["value"]["NOMBRE"]) ? $rTMP["value"]["NOMBRE"] : "";
-                                                            $intCategoria = isset($rTMP["value"]["IDCATEGORIA"]) ? intval($rTMP["value"]["IDCATEGORIA"]) : 0;
-                                                            $strNombreCategoria = isset($rTMP["value"]["NOMBRECATEGORIA"]) ? $rTMP["value"]["NOMBRECATEGORIA"] : "";
-                                                            $intTI = isset($rTMP["value"]["IDTIPO"]) ? intval($rTMP["value"]["IDTIPO"]) : 0;
-                                                            $strNombreTI = isset($rTMP["value"]["NOMBRETIPO"]) ? $rTMP["value"]["NOMBRETIPO"] : "";
-                                                        ?>
+                                                            $intID = $key;
+                                                            $strNombre = isset($val["NOMBRE"]) ? $val["NOMBRE"] : "";
+                                                            $intCategoria = isset($val["IDCATEGORIA"]) ? intval($val["IDCATEGORIA"]) : 0;
+                                                            $strNombreCategoria = isset($val["NOMBRECATEGORIA"]) ? $val["NOMBRECATEGORIA"] : "";
+                                                            $intTI = isset($val["IDTIPO"]) ? intval($val["IDTIPO"]) : 0;
+                                                            $strNombreTI = isset($val["NOMBRETIPO"]) ? $val["NOMBRETIPO"] : "";
+                                                            ?>
                                                             <tr id="trComponente_<?php print $intID; ?>">
                                                                 <td data-title="No." style="text-align:center; vertical-align:middle;">
                                                                     <h3><span class="badge badge-success"><?php print $intConteo; ?></span></h3>
@@ -528,7 +526,7 @@ class componentes_view
                             type: "post",
                             dataType: "json",
                             success: function(data) {
-                                if (data.Correcto == "Y") {
+                                if( data.Correcto == "Y" ) {
                                     alert("Usted ha cerrado sesión");
                                     location.href = "index.php";
                                 }
@@ -553,7 +551,7 @@ class componentes_view
                         valores.push(arrSplit[1]);
                     });
                     var max = parseInt(Math.max.apply(null, valores));
-                    if (isNaN(max)) {
+                    if ( isNaN(max) ) {
                         max = fntGetCountComponentes();
                     }
                     return max + 1;
@@ -594,14 +592,10 @@ class componentes_view
                     var $td = $("<td data-title='Nombre' style='text-align:center;'><input class='form-control' type='text' id='txtNombre_" + max + "' name='txtNombre_" + max + "'></td>")
                     $tr.append($td);
 
-                    var $td = $("<td data-title='Categoria' style='text-align:center;'><select class='form-control' id='selectCategoria_" + max + "' name='selectCategoria_" + max + "' style='text-align: center;'><?php $arrCategoria = $this->objModel->getcategoria();
-                                                                                                                                                                                                                    reset($arrCategoria);
-                                                                                                                                                                                                                    while ($rTMP = each($arrCategoria)) { ?><option value='<?php print $rTMP["key"]; ?>'><?php print $rTMP["value"]["NOMBRE"]; ?></option><?php } ?></select></td>");
+                    var $td = $("<td data-title='Categoria' style='text-align:center;'><select class='form-control' id='selectCategoria_" + max + "' name='selectCategoria_" + max + "' style='text-align: center;'><?php $arrCategoria = $this->objModel->getcategoria();foreach( $arrCategoria as $key => $val ){?><option value='<?php print $key; ?>'><?php print $val["NOMBRE"]; ?></option><?php } ?></select></td>");
                     $tr.append($td);
 
-                    var $td = $("<td data-title='Tipo Identificador' style='text-align:center;'><select class='form-control' id='selectIdentificador_" + max + "' name='selectIdentificador_" + max + "' style='text-align: center;'><?php $arrTipoIdentificador = $this->objModel->getIdentificador();
-                                                                                                                                                                                                                                        reset($arrTipoIdentificador);
-                                                                                                                                                                                                                                        while ($rTMP = each($arrTipoIdentificador)) { ?><option value='<?php print $rTMP["key"]; ?>'><?php print $rTMP["value"]["NOMBRE"]; ?></option><?php } ?></select></td>");
+                    var $td = $("<td data-title='Tipo Identificador' style='text-align:center;'><select class='form-control' id='selectIdentificador_" + max + "' name='selectIdentificador_" + max + "' style='text-align: center;'><?php $arrTipoIdentificador = $this->objModel->getIdentificador();foreach( $arrTipoIdentificador as $key => $val ){?><option value='<?php print $key; ?>'><?php print $val["NOMBRE"]; ?></option><?php } ?></select></td>");
                     $tr.append($td);
 
                     var $td = $("<td style='text-align:center; display:none;'></td>");
@@ -615,7 +609,7 @@ class componentes_view
                 function checkForm() {
                     var boolError = false;
                     $("input[name*='txtNombre_']").each(function() {
-                        if ($(this).val() == '') {
+                        if( $(this).val() == '' ) {
                             $(this).css('background-color', '#f4d0de');
                             boolError = true;
                         } else {
@@ -623,11 +617,10 @@ class componentes_view
                         }
                     });
 
-                    if (boolError == false) {
-                        var objSerialized = $("#tblComponentes").find("select, input").serialize();
+                    if ( boolError == false ) {
                         $.ajax({
                             url: "componentes.php",
-                            data: objSerialized,
+                            data: $("#tblComponentes").find("select, input").serialize() + "&process=Y",
                             type: "POST",
                             beforeSend: function() {
                                 $("#divShowLoadingGeneralBig").show();
@@ -643,10 +636,8 @@ class componentes_view
                 }
             </script>
         </body>
-
         </html>
-
-<?php
+    <?php
     }
 }
 
