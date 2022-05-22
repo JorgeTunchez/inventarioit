@@ -63,21 +63,21 @@ class identificador_controller
 
     public function process()
     {
-        reset($_POST);
-        while ($arrTMP = each($_POST)) {
-            $arrExplode = explode("_", $arrTMP['key']);
+        if( isset($_POST['process']) && $_POST['process'] == 'Y' ){
+            foreach($_POST as $key => $val){
+                $arrExplode = explode("_", $key);
+                if ($arrExplode[0] == "hdnIdentificador") {
+                    $intTI = $arrExplode[1];
+                    $strAccion = isset($_POST["hdnIdentificador_{$intTI}"]) ? trim($_POST["hdnIdentificador_{$intTI}"]) : '';
+                    $strNombre = isset($_POST["txtNombre_{$intTI}"]) ? trim($_POST["txtNombre_{$intTI}"]) : '';
 
-            if ($arrExplode[0] == "hdnIdentificador") {
-                $intTI = $arrExplode[1];
-                $strAccion = isset($_POST["hdnIdentificador_{$intTI}"]) ? trim($_POST["hdnIdentificador_{$intTI}"]) : '';
-                $strNombre = isset($_POST["txtNombre_{$intTI}"]) ? trim($_POST["txtNombre_{$intTI}"]) : '';
-
-                if ($strAccion == "A") {
-                    $this->objModel->insertIdentificador($strNombre, $this->arrRolUser["ID"]);
-                } elseif ($strAccion == "D") {
-                    $this->objModel->deleteIdentificador($intTI);
-                } elseif ($strAccion == "E") {
-                    $this->objModel->updateIdentificador($intTI, $strNombre, $this->arrRolUser["ID"]);
+                    if ($strAccion == "A") {
+                        $this->objModel->insertIdentificador($strNombre, $this->arrRolUser["ID"]);
+                    } elseif ($strAccion == "D") {
+                        $this->objModel->deleteIdentificador($intTI);
+                    } elseif ($strAccion == "E") {
+                        $this->objModel->updateIdentificador($intTI, $strNombre, $this->arrRolUser["ID"]);
+                    }
                 }
             }
         }
@@ -293,7 +293,7 @@ class identificador_view
                                         <!-- /.card-header -->
                                         <div class="card-body">
                                             <div id="no-more-tables">
-                                                <table class="table table-sm table-hover table-condensed" id="tblAreas">
+                                                <table class="table table-sm table-hover table-condensed" id="tblIdentificador">
                                                     <thead class="cf">
                                                         <tr>
                                                             <th style="text-align:center;">No. </th>
@@ -305,12 +305,11 @@ class identificador_view
                                                         <?php
                                                         $arrIdentificador = $this->objModel->getIdentificador();
                                                         $intConteo = 0;
-                                                        reset($arrIdentificador);
-                                                        while ($rTMP = each($arrIdentificador)) {
+                                                        foreach( $arrIdentificador as $key => $val ){
                                                             $intConteo++;
-                                                            $intID = $rTMP["key"];
-                                                            $strNombre = isset($rTMP["value"]["NOMBRE"]) ? trim($rTMP["value"]["NOMBRE"]) : "";
-                                                        ?>
+                                                            $intID = $key;
+                                                            $strNombre = isset($val["NOMBRE"]) ? trim($val["NOMBRE"]) : "";
+                                                            ?>
                                                             <tr id="trIdentificador_<?php print $intID; ?>">
                                                                 <td data-title="No." style="text-align:center; vertical-align:middle;">
                                                                     <h3><span class="badge badge-success"><?php print $intConteo; ?></span></h3>
@@ -329,7 +328,7 @@ class identificador_view
                                                                     <button class="btn btn-danger btn-block" onclick="deleteTI('<?php print $intID; ?>')"><i class="fa fa-trash"></i> Eliminar</button>
                                                                 </td>
                                                             </tr>
-                                                        <?php
+                                                            <?php
                                                         }
                                                         ?>
                                                     </tbody>
@@ -466,7 +465,7 @@ class identificador_view
 
                     max = fntGetCountMax();
 
-                    var $tabla = $("#tblAreas");
+                    var $tabla = $("#tblIdentificador");
                     var $tr = $("<tr></tr>");
                     // creamos la columna o td
                     var $td = $("<td data-title='No.' style='text-align:center;'><b>" + intFilasTI + "<b><input class='form-control' type='hidden' id='hdnIdentificador_" + max + "' name='hdnIdentificador_" + max + "' value='A'></td>")
@@ -495,10 +494,9 @@ class identificador_view
                     });
 
                     if (boolError == false) {
-                        var objSerialized = $("#tblAreas").find("select, input").serialize();
                         $.ajax({
                             url: "identificador.php",
-                            data: objSerialized,
+                            data:  $("#tblIdentificador").find("select, input").serialize() + "&process=Y",
                             type: "POST",
                             beforeSend: function() {
                                 $("#divShowLoadingGeneralBig").show();
