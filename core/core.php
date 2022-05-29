@@ -26,6 +26,12 @@ function executeQuery($strQuery){
     }
 }
 
+function preformato($objeto){
+    print "<pre>";
+    print_r($objeto);
+    print "</pre>";
+}
+
 function auth_user($username, $password)
 {
     $arrValues = array();

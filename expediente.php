@@ -86,75 +86,76 @@ class expediente_controller
 
     public function process()
     {
-        reset($_POST);
-        while ($arrTMP = each($_POST)) {
-            $arrExplode = explode("_", $arrTMP['key']);
-            $intColaborador = isset($_POST["hdnColaborador"]) ? $_POST["hdnColaborador"] : "";
-            $intIDExpediente = $this->objModel->getIDExpedienteColaborador($intColaborador);
+        if( isset($_POST['process']) && $_POST['process'] == 'Y' ){
+            foreach($_POST as $key => $val){
+                $arrExplode = explode("_", $key);
+                $intColaborador = isset($_POST["hdnColaborador"]) ? $_POST["hdnColaborador"] : "";
+                $intIDExpediente = $this->objModel->getIDExpedienteColaborador($intColaborador);
 
-            //Comentarios
-            $strComentarios = isset($_POST["txtComentarios"]) ? trim($_POST["txtComentarios"]) : "";
-            $this->objModel->updateComentarioExp($intIDExpediente, $strComentarios);
+                //Comentarios
+                $strComentarios = isset($_POST["txtComentarios"]) ? trim($_POST["txtComentarios"]) : "";
+                $this->objModel->updateComentarioExp($intIDExpediente, $strComentarios);
 
-            //DatosPersonales
-            $strNombreEquipo = isset($_POST["txtNombrePC"]) ? trim($_POST["txtNombrePC"]) : "";
-            $strDireccionIP = isset($_POST["txtIPPC"]) ? trim($_POST["txtIPPC"]) : "";
-            $strDominio = isset($_POST["txtDominicioPC"]) ? trim($_POST["txtDominicioPC"]) : "";
-            $strUsuario = isset($_POST["txtUsuarioPC"]) ? trim($_POST["txtUsuarioPC"]) : "";
-            $this->objModel->updateDatosEquipo($intIDExpediente, $strNombreEquipo, $strDireccionIP, $strDominio, $strUsuario);
+                //DatosPersonales
+                $strNombreEquipo = isset($_POST["txtNombrePC"]) ? trim($_POST["txtNombrePC"]) : "";
+                $strDireccionIP = isset($_POST["txtIPPC"]) ? trim($_POST["txtIPPC"]) : "";
+                $strDominio = isset($_POST["txtDominicioPC"]) ? trim($_POST["txtDominicioPC"]) : "";
+                $strUsuario = isset($_POST["txtUsuarioPC"]) ? trim($_POST["txtUsuarioPC"]) : "";
+                $this->objModel->updateDatosEquipo($intIDExpediente, $strNombreEquipo, $strDireccionIP, $strDominio, $strUsuario);
 
-            //Process de Hardware
-            if ($arrExplode[0] == "hdnIdHW") {
-                $intHardware = $arrExplode[1];
-                $strAccionH = isset($_POST["hdnIdHW_{$intHardware}"]) ? trim($_POST["hdnIdHW_{$intHardware}"]) : '';
-                $intComponenteH = isset($_POST["selectComponenteHD_{$intHardware}"]) ? intval($_POST["selectComponenteHD_{$intHardware}"]) : 0;
-                $strMarcaH = isset($_POST["txtHDMarca_{$intHardware}"]) ? trim($_POST["txtHDMarca_{$intHardware}"]) : '';
-                $strValorH = isset($_POST["txtHDValor_{$intHardware}"]) ? trim($_POST["txtHDValor_{$intHardware}"]) : '';
-                $strSerieH = isset($_POST["txtHDSerie_{$intHardware}"]) ? trim($_POST["txtHDSerie_{$intHardware}"]) : '';
-                $strModeloH = isset($_POST["txtHDModelo_{$intHardware}"]) ? trim($_POST["txtHDModelo_{$intHardware}"]) : '';
-                $strLineaH = isset($_POST["txtHDLinea_{$intHardware}"]) ? trim($_POST["txtHDLinea_{$intHardware}"]) : '';
-                $intAnioH = isset($_POST["txtHDAnio_{$intHardware}"]) ? intval($_POST["txtHDAnio_{$intHardware}"]) : 0;
+                //Process de Hardware
+                if ($arrExplode[0] == "hdnIdHW") {
+                    $intHardware = $arrExplode[1];
+                    $strAccionH = isset($_POST["hdnIdHW_{$intHardware}"]) ? trim($_POST["hdnIdHW_{$intHardware}"]) : '';
+                    $intComponenteH = isset($_POST["selectComponenteHD_{$intHardware}"]) ? intval($_POST["selectComponenteHD_{$intHardware}"]) : 0;
+                    $strMarcaH = isset($_POST["txtHDMarca_{$intHardware}"]) ? trim($_POST["txtHDMarca_{$intHardware}"]) : '';
+                    $strValorH = isset($_POST["txtHDValor_{$intHardware}"]) ? trim($_POST["txtHDValor_{$intHardware}"]) : '';
+                    $strSerieH = isset($_POST["txtHDSerie_{$intHardware}"]) ? trim($_POST["txtHDSerie_{$intHardware}"]) : '';
+                    $strModeloH = isset($_POST["txtHDModelo_{$intHardware}"]) ? trim($_POST["txtHDModelo_{$intHardware}"]) : '';
+                    $strLineaH = isset($_POST["txtHDLinea_{$intHardware}"]) ? trim($_POST["txtHDLinea_{$intHardware}"]) : '';
+                    $intAnioH = isset($_POST["txtHDAnio_{$intHardware}"]) ? intval($_POST["txtHDAnio_{$intHardware}"]) : 0;
 
-                if ($strAccionH == "A") {
-                    $this->objModel->insertExpDetail($intIDExpediente, $intComponenteH, $strMarcaH, $strValorH, 0, 0, $strSerieH, $strModeloH, $strLineaH, "", "", $intAnioH, $this->arrRolUser["ID"]);
-                } elseif ($strAccionH == "D") {
-                    $this->objModel->deleteExpDetail($intIDExpediente, $intHardware);
-                } elseif ($strAccionH == "E") {
-                    $this->objModel->updateExpDetail($intHardware, $intIDExpediente, $intComponenteH, $strMarcaH, $strValorH, 0, 0, $strSerieH, $strModeloH, $strLineaH, $intAnioH, "", "", $this->arrRolUser["ID"]);
+                    if ($strAccionH == "A") {
+                        $this->objModel->insertExpDetail($intIDExpediente, $intComponenteH, $strMarcaH, $strValorH, 0, 0, $strSerieH, $strModeloH, $strLineaH, "", "", $intAnioH, $this->arrRolUser["ID"]);
+                    } elseif ($strAccionH == "D") {
+                        $this->objModel->deleteExpDetail($intIDExpediente, $intHardware);
+                    } elseif ($strAccionH == "E") {
+                        $this->objModel->updateExpDetail($intHardware, $intIDExpediente, $intComponenteH, $strMarcaH, $strValorH, 0, 0, $strSerieH, $strModeloH, $strLineaH, $intAnioH, "", "", $this->arrRolUser["ID"]);
+                    }
                 }
-            }
 
-            //Process de Plataforma
-            if ($arrExplode[0] == "hdnIdPL") {
-                $intPlataforma = $arrExplode[1];
-                $strAccionP = isset($_POST["hdnIdPL_{$intPlataforma}"]) ? trim($_POST["hdnIdPL_{$intPlataforma}"]) : '';
-                $intComponenteP = isset($_POST["selectComponentePL_{$intPlataforma}"]) ? intval($_POST["selectComponentePL_{$intPlataforma}"]) : 0;
-                $strUsuario = isset($_POST["txtPLUsuario_{$intPlataforma}"]) ? trim($_POST["txtPLUsuario_{$intPlataforma}"]) : "";
-                $strOperador = isset($_POST["txtPLOperador_{$intPlataforma}"]) ? trim($_POST["txtPLOperador_{$intPlataforma}"]) : "";
+                //Process de Plataforma
+                if ($arrExplode[0] == "hdnIdPL") {
+                    $intPlataforma = $arrExplode[1];
+                    $strAccionP = isset($_POST["hdnIdPL_{$intPlataforma}"]) ? trim($_POST["hdnIdPL_{$intPlataforma}"]) : '';
+                    $intComponenteP = isset($_POST["selectComponentePL_{$intPlataforma}"]) ? intval($_POST["selectComponentePL_{$intPlataforma}"]) : 0;
+                    $strUsuario = isset($_POST["txtPLUsuario_{$intPlataforma}"]) ? trim($_POST["txtPLUsuario_{$intPlataforma}"]) : "";
+                    $strOperador = isset($_POST["txtPLOperador_{$intPlataforma}"]) ? trim($_POST["txtPLOperador_{$intPlataforma}"]) : "";
 
-                if ($strAccionP == "A") {
-                    $this->objModel->insertExpDetail($intIDExpediente, $intComponenteP, "", "", 0, 0, "", "", "", $strUsuario, $strOperador, 0, $this->arrRolUser["ID"]);
-                } elseif ($strAccionP == "D") {
-                    $this->objModel->deleteExpDetail($intIDExpediente, $intPlataforma);
-                } elseif ($strAccionP == "E") {
-                    $this->objModel->updateExpDetail($intPlataforma, $intIDExpediente, $intComponenteP, "", "", 0, 0, "", "", "", 0, $strUsuario, $strOperador, $this->arrRolUser["ID"]);
+                    if ($strAccionP == "A") {
+                        $this->objModel->insertExpDetail($intIDExpediente, $intComponenteP, "", "", 0, 0, "", "", "", $strUsuario, $strOperador, 0, $this->arrRolUser["ID"]);
+                    } elseif ($strAccionP == "D") {
+                        $this->objModel->deleteExpDetail($intIDExpediente, $intPlataforma);
+                    } elseif ($strAccionP == "E") {
+                        $this->objModel->updateExpDetail($intPlataforma, $intIDExpediente, $intComponenteP, "", "", 0, 0, "", "", "", 0, $strUsuario, $strOperador, $this->arrRolUser["ID"]);
+                    }
                 }
-            }
 
-            //Process de Software
-            if ($arrExplode[0] == "hdnIdSW") {
-                $intSoftware = $arrExplode[1];
-                $strAccionS = isset($_POST["hdnIdSW_{$intSoftware}"]) ? trim($_POST["hdnIdSW_{$intSoftware}"]) : '';
-                $intComponenteS = isset($_POST["selectComponenteSW_{$intSoftware}"]) ? intval($_POST["selectComponenteSW_{$intSoftware}"]) : 0;
-                $intPagoS = isset($_POST["selectPago_{$intSoftware}"]) ? intval($_POST["selectPago_{$intSoftware}"]) : 0;
-                $intVersionS = isset($_POST["txtSWVersion_{$intSoftware}"]) ? trim($_POST["txtSWVersion_{$intSoftware}"]) : "";
+                //Process de Software
+                if ($arrExplode[0] == "hdnIdSW") {
+                    $intSoftware = $arrExplode[1];
+                    $strAccionS = isset($_POST["hdnIdSW_{$intSoftware}"]) ? trim($_POST["hdnIdSW_{$intSoftware}"]) : '';
+                    $intComponenteS = isset($_POST["selectComponenteSW_{$intSoftware}"]) ? intval($_POST["selectComponenteSW_{$intSoftware}"]) : 0;
+                    $intPagoS = isset($_POST["selectPago_{$intSoftware}"]) ? intval($_POST["selectPago_{$intSoftware}"]) : 0;
+                    $intVersionS = isset($_POST["txtSWVersion_{$intSoftware}"]) ? trim($_POST["txtSWVersion_{$intSoftware}"]) : "";
 
-                if ($strAccionS == "A") {
-                    $this->objModel->insertExpDetail($intIDExpediente, $intComponenteS, "", "",  $intPagoS, $intVersionS, "", "", "", "", "", 0, $this->arrRolUser["ID"]);
-                } elseif ($strAccionS == "D") {
-                    $this->objModel->deleteExpDetail($intIDExpediente, $intSoftware);
-                } elseif ($strAccionS == "E") {
-                    $this->objModel->updateExpDetail($intSoftware, $intIDExpediente, $intComponenteS, "", "", $intPagoS, $intVersionS, "", "", "", 0, "", "", $this->arrRolUser["ID"]);
+                    if ($strAccionS == "A") {
+                        $this->objModel->insertExpDetail($intIDExpediente, $intComponenteS, "", "",  $intPagoS, $intVersionS, "", "", "", "", "", 0, $this->arrRolUser["ID"]);
+                    } elseif ($strAccionS == "D") {
+                        $this->objModel->deleteExpDetail($intIDExpediente, $intSoftware);
+                    } elseif ($strAccionS == "E") {
+                        $this->objModel->updateExpDetail($intSoftware, $intIDExpediente, $intComponenteS, "", "", $intPagoS, $intVersionS, "", "", "", 0, "", "", $this->arrRolUser["ID"]);
+                    }
                 }
             }
         }
@@ -165,7 +166,6 @@ class expediente_controller
     {
         if (isset($_POST['hdnExportar'])) {
             header('Content-Type: text/html; charset=utf-8');
-            require_once("tcpdf/tcpdf.php");
             $intColaborador = isset($_POST["intColaborador"]) ? $_POST["intColaborador"] : '';
             $strNombreColaborador = getNombreColaborador($intColaborador);
 
@@ -176,8 +176,8 @@ class expediente_controller
             if ($strTipoExportar == 'PDF') {
                 $strHTML = $this->objView->drawExportReport($arrColaborador);
                 //print $strHTML;
-
                 ob_start();
+                require_once("tcpdf/tcpdf.php");
                 $pdf = new TCPDF("P", "mm", "LETTER", false, 'UTF-8', false);
                 $pdf->AddPage('P');
                 $pdf->SetFont('helvetica', '', 7);
@@ -185,7 +185,6 @@ class expediente_controller
                 ob_end_clean();
                 $pdf->Output($strNombreArchivo . '.pdf', 'D');
             }
-
             exit();
         }
     }
@@ -529,16 +528,15 @@ class expediente_view
     public function drawSelectArea()
     {
         $arrArea = $this->objModel->getArea();
-?>
+        ?>
         <label>
             <h4>1. Seleccione un área:</h4>
         </label>
         <select id="selectArea" name="selectArea" style="text-align:center; width:100%;" class="form-control select2" onchange="loadColaboradores()">
             <?php
-            reset($arrArea);
-            while ($rTMP = each($arrArea)) {
+            foreach( $arrArea as $key => $val ){
             ?>
-                <option value="<?php print $rTMP["key"]; ?>"><?php print $rTMP["value"]["NOMBRE"]; ?></option>
+                <option value="<?php print $key; ?>"><?php print $val["NOMBRE"]; ?></option>
             <?php
             }
             ?>
@@ -549,14 +547,13 @@ class expediente_view
     public function drawSelectTipoEquipo($intTipo = 0)
     {
         $arrTipoEquipo = $this->objModel->getTipoEquipo();
-    ?>
+        ?>
         <select id="selectTipoEquipo" name="selectTipoEquipo" style="text-align: center;" class="form-control">
             <?php
-            reset($arrTipoEquipo);
-            while ($rTMP = each($arrTipoEquipo)) {
-                $strSelected = (($rTMP["key"] == $intTipo)) ? 'selected' : '';
+            foreach( $arrTipoEquipo as $key => $val ){
+                $strSelected = ( $key == $intTipo ) ? 'selected' : '';
             ?>
-                <option value="<?php print $rTMP["key"]; ?>" <?php print $strSelected; ?>><?php print $rTMP["value"]["NOMBRE"]; ?></option>
+                <option value="<?php print $key; ?>" <?php print $strSelected; ?>><?php print $val["NOMBRE"]; ?></option>
             <?php
             }
             ?>
@@ -574,10 +571,9 @@ class expediente_view
         <select id="selectColaboradores" name="selectColaboradores" style="text-align:center; width:100%;" class="form-control select2">
             <option value="0">-- Seleccione un colaborador --</option>
             <?php
-            reset($arrColaboradores);
-            while ($rTMP = each($arrColaboradores)) {
-                $intID = $rTMP["key"];
-                $strLabel = $rTMP["value"]["CIF"] . ' - ' . $rTMP["value"]["NOMBRECOMPLETO"]
+            foreach( $arrColaboradores as $key => $val ){
+                $intID = $key;
+                $strLabel = $val["CIF"] . ' - ' . $val["NOMBRECOMPLETO"]
             ?>
                 <option value="<?php print $intID; ?>"><?php print $strLabel; ?></option>
             <?php
@@ -623,8 +619,7 @@ class expediente_view
             $strHTML .= '<td colspan="8"></td>';
             $strHTML .= '</tr>';
 
-            reset($arrColaborador);
-            while ($rTMP = each($arrColaborador)) {
+            foreach( $arrColaborador as $key => $val ){
                 $strHTML .= '<tr bgcolor="#b4e3ef">';
                 $strHTML .= '<td colspan="4" style="text-align:center;border: 0.5px solid black;"><h2>Datos Personales</h2></td>';
                 $strHTML .= '<td colspan="4" style="text-align:center;border: 0.5px solid black;"><h2>Datos del Equipo</h2></td>';
@@ -633,20 +628,19 @@ class expediente_view
 
                 //DATOS PERSONALES
                 $strHTML .= '<td colspan="4" style="padding:10px; border: 0.5px solid black;">';
-                if (isset($rTMP["value"]["DATOS_PERSONALES"])) {
+                if (isset($val['DATOS_PERSONALES'])) {
                     $strHTML .= '<table>';
                     $strHTML .= '<tr>';
                     $strHTML .= '<td></td>';
                     $strHTML .= '</tr>';
-                    reset($rTMP["value"]["DATOS_PERSONALES"]);
-                    while ($rTMP2 = each($rTMP["value"]["DATOS_PERSONALES"])) {
-                        $strNombres = utf8_decode($rTMP2["value"]["NOMBRES"]);
-                        $strApellidos = utf8_decode($rTMP2["value"]["APELLIDOS"]);
-                        $strCIF = $rTMP2["value"]["CIF"];
-                        $strPuesto = utf8_decode($rTMP2["value"]["PUESTO"]);
-                        $strArea = utf8_decode($rTMP2["value"]["NOMBREAREA"]);
-                        $strUsuario = $rTMP2["value"]["USUARIO"];
-                        $strActivo = $rTMP2["value"]["ACTIVO"];
+                    foreach( $val["DATOS_PERSONALES"] as $key => $val1 ){
+                        $strNombres = utf8_decode($val1["NOMBRES"]);
+                        $strApellidos = utf8_decode($val1["APELLIDOS"]);
+                        $strCIF = $val1["CIF"];
+                        $strPuesto = utf8_decode($val1["PUESTO"]);
+                        $strArea = utf8_decode($val1["NOMBREAREA"]);
+                        $strUsuario = $val1["USUARIO"];
+                        $strActivo = $val1["ACTIVO"];
                         $strHTML .= '<tr>';
                         $strHTML .= '<td colspan="4" style="text-align:left;"><b>Nombres:</b> ' . $strNombres . ' ' . $strApellidos . '</td>';
                         $strHTML .= '</tr>';
@@ -675,16 +669,16 @@ class expediente_view
 
                 //DATOS DEL EQUIPO
                 $strHTML .= '<td colspan="4" style="padding:10px;  border: 0.5px solid black;">';
-                if (isset($rTMP["value"]["DATOSEQUIPO"])) {
+                if (isset($val["DATOSEQUIPO"])) {
                     $strHTML .= '<table>';
                     $strHTML .= '<tr>';
                     $strHTML .= '<td></td>';
                     $strHTML .= '</tr>';
-                    reset($rTMP["value"]["DATOSEQUIPO"]);
-                    while ($rTMP5 = each($rTMP["value"]["DATOSEQUIPO"])) {
-                        $strNombreEquipo = $rTMP5["value"]["NOMBREEQUIPO"];
-                        $strDireccionIP = $rTMP5["value"]["DIRECCIONIP"];
-                        $strDominio = ($rTMP5["value"]["DOMINIO"] != "") ? $rTMP5["value"]["DOMINIO"] : "No";
+
+                    foreach( $val["DATOSEQUIPO"] as $key => $val2 ){
+                        $strNombreEquipo = $val2["NOMBREEQUIPO"];
+                        $strDireccionIP = $val2["DIRECCIONIP"];
+                        $strDominio = ($val2["DOMINIO"] != "") ? $val2["DOMINIO"] : "No";
                         $strHTML .= '<tr>';
                         $strHTML .= '<td colspan="4" style="text-align:left;"><b>Nombre del Equipo:</b> ' . $strNombreEquipo . '</td>';
                         $strHTML .= '</tr>';
@@ -704,7 +698,7 @@ class expediente_view
                 $strHTML .= '</tr>';
 
                 //HARDWARE
-                if (isset($rTMP["value"]["DETALLE_HARDWARE"])) {
+                if (isset($val["DETALLE_HARDWARE"])) {
                     $strHTML .= '<tr bgcolor="#b4e3ef">';
                     $strHTML .= '<td colspan="8" style="text-align:center; border: 0.5px solid black;"><h2>Hardware</h2></td>';
                     $strHTML .= '</tr>';
@@ -719,18 +713,15 @@ class expediente_view
                     $strHTML .= '<td style="text-align:center;border: 0.5px solid black;" width="10%"><b>' . utf8_decode("Año") . '</b></td>';
                     $strHTML .= '</tr>';
                     $intCountHD = 0;
-                    reset($rTMP["value"]["DETALLE_HARDWARE"]);
-                    while ($rTMP2 = each($rTMP["value"]["DETALLE_HARDWARE"])) {
+                    foreach( $val["DETALLE_HARDWARE"] as $key => $val3 ){
                         $intCountHD++;
-                        $intID = $rTMP2["key"];
-                        $intIDComponente = intval($rTMP2["value"]["ID_COMPONENTE"]);
-                        $strNombreHD = utf8_decode($rTMP2["value"]["NOMBRE_COMPONENTE"]);
-                        $strMarcaHD = utf8_decode($rTMP2["value"]["MARCA"]);
-                        $strValorHD = $rTMP2["value"]["VALOR"];
-                        $strSerieHD = $rTMP2["value"]["SERIE"];
-                        $strModeloHD = $rTMP2["value"]["MODELO"];
-                        $strLineaD = $rTMP2["value"]["LINEA"];
-                        $intAnioHD = (intval($rTMP2["value"]["ANIO"]) == 0) ? "" : intval($rTMP2["value"]["ANIO"]);
+                        $strNombreHD = utf8_decode($val3["NOMBRE_COMPONENTE"]);
+                        $strMarcaHD = utf8_decode($val3["MARCA"]);
+                        $strValorHD = $val3["VALOR"];
+                        $strSerieHD = $val3["SERIE"];
+                        $strModeloHD = $val3["MODELO"];
+                        $strLineaD = $val3["LINEA"];
+                        $intAnioHD = (intval($val3["ANIO"]) == 0) ? "" : intval($val3["ANIO"]);
                         $strHTML .= '<tr>';
                         $strHTML .= '<td style="text-align:center;border: 0.5px solid black;">' . $intCountHD . '</td>';
                         $strHTML .= '<td style="text-align:center;border: 0.5px solid black;">' . $strNombreHD . '</td>';
@@ -748,7 +739,7 @@ class expediente_view
                 }
 
                 //SOFTWARE
-                if (isset($rTMP["value"]["DETALLE_SOFTWARE"])) {
+                if (isset($val["DETALLE_SOFTWARE"])) {
                     $strHTML .= '<tr bgcolor="#b4e3ef">';
                     $strHTML .= '<td colspan="8" style="text-align:center; border: 1px solid black;"><h2>Software</h2></td>';
                     $strHTML .= '</tr>';
@@ -759,15 +750,12 @@ class expediente_view
                     $strHTML .= '<td width="35%" style="text-align:center;border: 0.5px solid black;"><b>Version</b></td>';
                     $strHTML .= '</tr>';
                     $intCountSW = 0;
-                    reset($rTMP["value"]["DETALLE_SOFTWARE"]);
-                    while ($rTMP3 = each($rTMP["value"]["DETALLE_SOFTWARE"])) {
+                    foreach( $val["DETALLE_SOFTWARE"] as $key => $val4 ){
                         $intCountSW++;
-                        $intID = $rTMP3["key"];
-                        $intIDComponente = intval($rTMP3["value"]["ID_COMPONENTE"]);
-                        $strNombreSW = utf8_decode($rTMP3["value"]["NOMBRE_COMPONENTE"]);
-                        $intPago = $rTMP3["value"]["PAGO"];
+                        $strNombreSW = utf8_decode($val4["NOMBRE_COMPONENTE"]);
+                        $intPago = $val4["PAGO"];
                         $strPagoSW = ($intPago == 1) ? "Si" : "No";
-                        $strVersionSW = $rTMP3["value"]["VERSION"];
+                        $strVersionSW = $val4["VERSION"];
                         $strHTML .= '<tr>';
                         $strHTML .= '<td style="text-align:center;border: 0.5px solid black;">' . $intCountSW . '</td>';
                         $strHTML .= '<td style="text-align:center;border: 0.5px solid black;">' . $strNombreSW . '</td>';
@@ -781,7 +769,7 @@ class expediente_view
                 }
 
                 //PLATAFORMAS
-                if (isset($rTMP["value"]["PLATAFORMAS"])) {
+                if (isset($val["PLATAFORMAS"])) {
                     $strHTML .= '<tr bgcolor="#b4e3ef">';
                     $strHTML .= '<td colspan="4" style="text-align:center; border: 0.5px solid black;"><h2>Plataformas</h2></td>';
                     $strHTML .= '</tr>';
@@ -792,13 +780,11 @@ class expediente_view
                     $strHTML .= '<td style="text-align:center;border: 0.5px solid black;" width="25%"><b>Operador</b></td>';
                     $strHTML .= '</tr>';
                     $intCountPl = 0;
-                    reset($rTMP["value"]["PLATAFORMAS"]);
-                    while ($rTMP3 = each($rTMP["value"]["PLATAFORMAS"])) {
+                    foreach( $val["PLATAFORMAS"] as $key => $val5 ){
                         $intCountPl++;
-                        $intID = $rTMP3["key"];
-                        $strNombrePl = utf8_decode($rTMP3["value"]["NOMBRE_COMPONENTE"]);
-                        $strUsuarioPl = $rTMP3["value"]["USUARIO"];
-                        $strOperadorPl = $rTMP3["value"]["OPERADOR"];
+                        $strNombrePl = utf8_decode($val5["NOMBRE_COMPONENTE"]);
+                        $strUsuarioPl = $val5["USUARIO"];
+                        $strOperadorPl = $val5["OPERADOR"];
                         $strHTML .= '<tr>';
                         $strHTML .= '<td style="text-align:center;border: 0.5px solid black;">' . $intCountPl . '</td>';
                         $strHTML .= '<td style="text-align:center;border: 0.5px solid black;">' . $strNombrePl . '</td>';
@@ -811,16 +797,13 @@ class expediente_view
                     $strHTML .= '</tr>';
                 }
 
-
-
                 //COMENTARIO
-                if (isset($rTMP["value"]["COMENTARIO"])) {
+                if (isset($val["COMENTARIO"])) {
                     $strHTML .= '<tr>';
                     $strHTML .= '<td colspan="8" style="text-align:left;"></td>';
                     $strHTML .= '</tr>';
-                    reset($rTMP["value"]["COMENTARIO"]);
-                    while ($rTMP4 = each($rTMP["value"]["COMENTARIO"])) {
-                        $strComentario = $rTMP4["value"]["COMENTARIO"];
+                    foreach( $val["COMENTARIO"] as $key => $val6 ){
+                        $strComentario = $val6["COMENTARIO"];
                         $strHTML .= '<tr>';
                         $strHTML .= '<td colspan="8" style="text-align:left;"><h2>Observaciones:</h2></td>';
                         $strHTML .= '</tr>';
@@ -879,8 +862,7 @@ class expediente_view
     {
         $arrColaborador = $this->objModel->getInfoColaborador($intColaborador);
         if (count($arrColaborador) > 0) {
-            reset($arrColaborador);
-            while ($rTMP = each($arrColaborador)) {
+            foreach( $arrColaborador as $key => $val ){
             ?>
                 <div class="col-sm-12 col-md-12 col-lg-12">
                     <br><br><br>
@@ -894,14 +876,13 @@ class expediente_view
                                     <td colspan="6"><input type="hidden" id="hdnColaborador" name="hdnColaborador" value="<?php print $intColaborador; ?>"></td>
                                 </tr>
                                 <?php
-                                reset($rTMP["value"]["DATOS_PERSONALES"]);
-                                while ($rTMP2 = each($rTMP["value"]["DATOS_PERSONALES"])) {
-                                    $strNombres = $rTMP2["value"]["NOMBRES"];
-                                    $strApellidos = $rTMP2["value"]["APELLIDOS"];
-                                    $strCIF = $rTMP2["value"]["CIF"];
-                                    $strPuesto = $rTMP2["value"]["PUESTO"];
-                                    $strArea = $rTMP2["value"]["NOMBREAREA"];
-                                    $strActivo = $rTMP2["value"]["ACTIVO"];
+                                foreach( $val["DATOS_PERSONALES"] as $key => $val1 ){
+                                    $strNombres = $val1["NOMBRES"];
+                                    $strApellidos = $val1["APELLIDOS"];
+                                    $strCIF = $val1["CIF"];
+                                    $strPuesto = $val1["PUESTO"];
+                                    $strArea = $val1["NOMBREAREA"];
+                                    $strActivo = $val1["ACTIVO"];
                                 ?>
                                     <tr>
                                         <td style="text-align:center;"><b>Nombres:</b></td>
@@ -935,36 +916,35 @@ class expediente_view
                         <div class="card-body">
                             <table class="table" id="tblDatosEquipo">
                                 <?php
-                                if (isset($rTMP["value"]["DATOSEQUIPO"])) {
+                                if (isset($val["DATOSEQUIPO"])) {
                                     $intCountHD = 0;
-                                    reset($rTMP["value"]["DATOSEQUIPO"]);
-                                    while ($rTMP5 = each($rTMP["value"]["DATOSEQUIPO"])) {
-                                        $strNombreEquipo = $rTMP5["value"]["NOMBREEQUIPO"];
-                                        $strDireccionIP = $rTMP5["value"]["DIRECCIONIP"];
-                                        $strDominio = $rTMP5["value"]["DOMINIO"];
-                                        $strUsuario = $rTMP5["value"]["USUARIO"];
-                                    ?>
-                                        <tr>
-                                            <td style="text-align:center; vertical-align:middle;"><b>Nombre PC</b></td>
-                                            <td><input class="form-control" type="text" id="txtNombrePC" name="txtNombrePC" value="<?php print $strNombreEquipo; ?>"></td>
-                                            <td>&nbsp;</td>
-                                            <td style="text-align:center; vertical-align:middle;"><b>Dirección IP</b></td>
-                                            <td><input class="form-control" type="text" id="txtIPPC" name="txtIPPC" value="<?php print $strDireccionIP; ?>"></td>
-                                            <td>&nbsp;</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center; vertical-align:middle;"><b>Dominio</b></td>
-                                            <td>
-                                                <select class="form-control" id="txtDominicioPC" name="txtDominicioPC">
-                                                    <option value="No" <?php print ( $strDominio =="No" )?"selected":""; ?>>No</option>
-                                                    <option value="Si" <?php print ( $strDominio =="Si" )?"selected":""; ?>>Si</option>
-                                                </select>
-                                            <td>&nbsp;</td>
-                                            <td style="text-align:center; vertical-align:middle;"><b>Usuario</b></td>
-                                            <td><input class="form-control" type="text" id="txtUsuarioPC" name="txtUsuarioPC" value="<?php print $strUsuario; ?>"></td>
-                                            <td>&nbsp;</td>
-                                        </tr>
-                                    <?php
+                                    foreach( $val["DATOSEQUIPO"] as $key => $val2 ){
+                                        $strNombreEquipo = $val2["NOMBREEQUIPO"];
+                                        $strDireccionIP = $val2["DIRECCIONIP"];
+                                        $strDominio = $val2["DOMINIO"];
+                                        $strUsuario = $val2["USUARIO"];
+                                        ?>
+                                            <tr>
+                                                <td style="text-align:center; vertical-align:middle;"><b>Nombre PC</b></td>
+                                                <td><input class="form-control" type="text" id="txtNombrePC" name="txtNombrePC" value="<?php print $strNombreEquipo; ?>"></td>
+                                                <td>&nbsp;</td>
+                                                <td style="text-align:center; vertical-align:middle;"><b>Dirección IP</b></td>
+                                                <td><input class="form-control" type="text" id="txtIPPC" name="txtIPPC" value="<?php print $strDireccionIP; ?>"></td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align:center; vertical-align:middle;"><b>Dominio</b></td>
+                                                <td>
+                                                    <select class="form-control" id="txtDominicioPC" name="txtDominicioPC">
+                                                        <option value="No" <?php print ( $strDominio =="No" )?"selected":""; ?>>No</option>
+                                                        <option value="Si" <?php print ( $strDominio =="Si" )?"selected":""; ?>>Si</option>
+                                                    </select>
+                                                <td>&nbsp;</td>
+                                                <td style="text-align:center; vertical-align:middle;"><b>Usuario</b></td>
+                                                <td><input class="form-control" type="text" id="txtUsuarioPC" name="txtUsuarioPC" value="<?php print $strUsuario; ?>"></td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                        <?php
                                     }
                                 }
                                 ?>
@@ -996,90 +976,90 @@ class expediente_view
                                     </thead>
                                     <tbody>
                                         <?php
-                                        if (isset($rTMP["value"]["DETALLE_HARDWARE"])) {
+                                        if (isset($val["DETALLE_HARDWARE"])) {
                                             $intCountHD = 0;
-                                            reset($rTMP["value"]["DETALLE_HARDWARE"]);
-                                            while ($rTMP3 = each($rTMP["value"]["DETALLE_HARDWARE"])) {
+                                            foreach( $val["DETALLE_HARDWARE"] as $key => $val3 ){
                                                 $intCountHD++;
-                                                $intID = $rTMP3["key"];
-                                                $intIDComponente = intval($rTMP3["value"]["ID_COMPONENTE"]);
-                                                $strNombreHD = isset($rTMP3["value"]["NOMBRE_COMPONENTE"]) ? $rTMP3["value"]["NOMBRE_COMPONENTE"] : "N/A";
-                                                $strMarcaHD = isset($rTMP3["value"]["MARCA"]) ? $rTMP3["value"]["MARCA"] : "N/A";
-                                                $strValorHD = isset($rTMP3["value"]["VALOR"]) ? $rTMP3["value"]["VALOR"] : "N/A";
-                                                $strSerieHD = isset($rTMP3["value"]["SERIE"]) ? $rTMP3["value"]["SERIE"] : "N/A";
-                                                $strModeloHD = isset($rTMP3["value"]["MODELO"]) ? $rTMP3["value"]["MODELO"] : "N/A";
-                                                $strLineaD = isset($rTMP3["value"]["LINEA"]) ? $rTMP3["value"]["LINEA"] : "N/A";
-                                                $intAnioHD = isset($rTMP3["value"]["ANIO"]) ? $rTMP3["value"]["ANIO"] : "N/A";
-                                        ?>
-                                                <tr id="trHardware_<?php print $intID; ?>">
-                                                    <td data-title="No." style="text-align:center; vertical-align:middle;">
-                                                        <h3><span class="badge badge-danger"><?php print $intCountHD; ?></span></h3>
-                                                        <input id="hdnIdHW_<?php print $intID; ?>" name="hdnIdHW_<?php print $intID; ?>" type="hidden" value="N">
-                                                    </td>
-                                                    <td data-title="Nombre" style="text-align:center; vertical-align:middle;">
-                                                        <div id="divShowHDNombre_<?php print $intID; ?>">
-                                                            <?php print $strNombreHD; ?>
-                                                        </div>
-                                                        <div id="divEditHDNombre_<?php print $intID; ?>" style="display:none;">
-                                                            <?php $this->drawSelectComponenteHD($intID, $intIDComponente); ?>
-                                                        </div>
-                                                    </td>
-                                                    <td data-title="Marca" style="text-align:center; vertical-align:middle;">
-                                                        <div id="divShowHDMarca_<?php print $intID; ?>">
-                                                            <?php print $strMarcaHD; ?>
-                                                        </div>
-                                                        <div id="divEditHDMarca_<?php print $intID; ?>" style="display:none;">
-                                                            <input class="form-control" type="text" id="txtHDMarca_<?php print $intID; ?>" name="txtHDMarca_<?php print $intID; ?>" value="<?php print $strMarcaHD; ?>">
-                                                        </div>
-                                                    </td>
-                                                    <td data-title="Valor" style="text-align:center; vertical-align:middle;">
-                                                        <div id="divShowHDValor_<?php print $intID; ?>">
-                                                            <?php print $strValorHD; ?>
-                                                        </div>
-                                                        <div id="divEditHDValor_<?php print $intID; ?>" style="display:none;">
-                                                            <input class="form-control" type="text" id="txtHDValor_<?php print $intID; ?>" name="txtHDValor_<?php print $intID; ?>" value="<?php print $strValorHD; ?>">
-                                                        </div>
-                                                    </td>
-                                                    <td data-title="Serie" style="text-align:center; vertical-align:middle;">
-                                                        <div id="divShowHDSerie_<?php print $intID; ?>">
-                                                            <?php print $strSerieHD; ?>
-                                                        </div>
-                                                        <div id="divEditHDSerie_<?php print $intID; ?>" style="display:none;">
-                                                            <input class="form-control" type="text" id="txtHDSerie_<?php print $intID; ?>" name="txtHDSerie_<?php print $intID; ?>" value="<?php print $strSerieHD; ?>">
-                                                        </div>
-                                                    </td>
-                                                    <td data-title="Modelo" style="text-align:center; vertical-align:middle;">
-                                                        <div id="divShowHDModelo_<?php print $intID; ?>">
-                                                            <?php print $strModeloHD; ?>
-                                                        </div>
-                                                        <div id="divEditHDModelo_<?php print $intID; ?>" style="display:none;">
-                                                            <input class="form-control" type="text" id="txtHDModelo_<?php print $intID; ?>" name="txtHDModelo_<?php print $intID; ?>" value="<?php print $strModeloHD; ?>">
-                                                        </div>
-                                                    </td>
-                                                    <td data-title="Linea" style="text-align:center; vertical-align:middle;">
-                                                        <div id="divShowHDLinea_<?php print $intID; ?>">
-                                                            <?php print $strLineaD; ?>
-                                                        </div>
-                                                        <div id="divEditHDLinea_<?php print $intID; ?>" style="display:none;">
-                                                            <input class="form-control" type="text" id="txtHDLinea_<?php print $intID; ?>" name="txtHDLinea_<?php print $intID; ?>" value="<?php print $strLineaD; ?>">
-                                                        </div>
-                                                    </td>
-                                                    <td data-title="Año" style="text-align:center; vertical-align:middle;">
-                                                        <div id="divShowHDAnio_<?php print $intID; ?>">
-                                                            <?php print $intAnioHD; ?>
-                                                        </div>
-                                                        <div id="divEditHDAnio_<?php print $intID; ?>" style="display:none;">
-                                                            <input class="form-control" type="number" id="txtHDAnio_<?php print $intID; ?>" name="txtHDAnio_<?php print $intID; ?>" value="<?php print $intAnioHD; ?>">
-                                                        </div>
-                                                    </td>
-                                                    <td style="text-align:center;">
-                                                        <button class="btn btn-secondary btn-block" onclick="editHD('<?php print $intID; ?>')"><i class="fa fa-pencil"></i> Editar</button>
-                                                        <button class="btn btn-secondary btn-block" onclick="deleteHD('<?php print $intID; ?>')"><i class="fa fa-trash"></i> Eliminar</button>
-                                                    </td>
-                                                </tr>
-                                            <?php
+                                                $intID = $key;
+                                                $intIDComponente = intval($val3["ID_COMPONENTE"]);
+                                                $strNombreHD = isset($val3["NOMBRE_COMPONENTE"]) ? $val3["NOMBRE_COMPONENTE"] : "N/A";
+                                                $strMarcaHD = isset($val3["MARCA"]) ? $val3["MARCA"] : "N/A";
+                                                $strValorHD = isset($val3["VALOR"]) ? $val3["VALOR"] : "N/A";
+                                                $strSerieHD = isset($val3["SERIE"]) ? $val3["SERIE"] : "N/A";
+                                                $strModeloHD = isset($val3["MODELO"]) ? $val3["MODELO"] : "N/A";
+                                                $strLineaD = isset($val3["LINEA"]) ? $val3["LINEA"] : "N/A";
+                                                $intAnioHD = isset($val3["ANIO"]) ? $val3["ANIO"] : "N/A";
+                                                ?>
+                                                    <tr id="trHardware_<?php print $intID; ?>">
+                                                        <td data-title="No." style="text-align:center; vertical-align:middle;">
+                                                            <h3><span class="badge badge-danger"><?php print $intCountHD; ?></span></h3>
+                                                            <input id="hdnIdHW_<?php print $intID; ?>" name="hdnIdHW_<?php print $intID; ?>" type="hidden" value="N">
+                                                        </td>
+                                                        <td data-title="Nombre" style="text-align:center; vertical-align:middle;">
+                                                            <div id="divShowHDNombre_<?php print $intID; ?>">
+                                                                <?php print $strNombreHD; ?>
+                                                            </div>
+                                                            <div id="divEditHDNombre_<?php print $intID; ?>" style="display:none;">
+                                                                <?php $this->drawSelectComponenteHD($intID, $intIDComponente); ?>
+                                                            </div>
+                                                        </td>
+                                                        <td data-title="Marca" style="text-align:center; vertical-align:middle;">
+                                                            <div id="divShowHDMarca_<?php print $intID; ?>">
+                                                                <?php print $strMarcaHD; ?>
+                                                            </div>
+                                                            <div id="divEditHDMarca_<?php print $intID; ?>" style="display:none;">
+                                                                <input class="form-control" type="text" id="txtHDMarca_<?php print $intID; ?>" name="txtHDMarca_<?php print $intID; ?>" value="<?php print $strMarcaHD; ?>">
+                                                            </div>
+                                                        </td>
+                                                        <td data-title="Valor" style="text-align:center; vertical-align:middle;">
+                                                            <div id="divShowHDValor_<?php print $intID; ?>">
+                                                                <?php print $strValorHD; ?>
+                                                            </div>
+                                                            <div id="divEditHDValor_<?php print $intID; ?>" style="display:none;">
+                                                                <input class="form-control" type="text" id="txtHDValor_<?php print $intID; ?>" name="txtHDValor_<?php print $intID; ?>" value="<?php print $strValorHD; ?>">
+                                                            </div>
+                                                        </td>
+                                                        <td data-title="Serie" style="text-align:center; vertical-align:middle;">
+                                                            <div id="divShowHDSerie_<?php print $intID; ?>">
+                                                                <?php print $strSerieHD; ?>
+                                                            </div>
+                                                            <div id="divEditHDSerie_<?php print $intID; ?>" style="display:none;">
+                                                                <input class="form-control" type="text" id="txtHDSerie_<?php print $intID; ?>" name="txtHDSerie_<?php print $intID; ?>" value="<?php print $strSerieHD; ?>">
+                                                            </div>
+                                                        </td>
+                                                        <td data-title="Modelo" style="text-align:center; vertical-align:middle;">
+                                                            <div id="divShowHDModelo_<?php print $intID; ?>">
+                                                                <?php print $strModeloHD; ?>
+                                                            </div>
+                                                            <div id="divEditHDModelo_<?php print $intID; ?>" style="display:none;">
+                                                                <input class="form-control" type="text" id="txtHDModelo_<?php print $intID; ?>" name="txtHDModelo_<?php print $intID; ?>" value="<?php print $strModeloHD; ?>">
+                                                            </div>
+                                                        </td>
+                                                        <td data-title="Linea" style="text-align:center; vertical-align:middle;">
+                                                            <div id="divShowHDLinea_<?php print $intID; ?>">
+                                                                <?php print $strLineaD; ?>
+                                                            </div>
+                                                            <div id="divEditHDLinea_<?php print $intID; ?>" style="display:none;">
+                                                                <input class="form-control" type="text" id="txtHDLinea_<?php print $intID; ?>" name="txtHDLinea_<?php print $intID; ?>" value="<?php print $strLineaD; ?>">
+                                                            </div>
+                                                        </td>
+                                                        <td data-title="Año" style="text-align:center; vertical-align:middle;">
+                                                            <div id="divShowHDAnio_<?php print $intID; ?>">
+                                                                <?php print $intAnioHD; ?>
+                                                            </div>
+                                                            <div id="divEditHDAnio_<?php print $intID; ?>" style="display:none;">
+                                                                <input class="form-control" type="number" id="txtHDAnio_<?php print $intID; ?>" name="txtHDAnio_<?php print $intID; ?>" value="<?php print $intAnioHD; ?>">
+                                                            </div>
+                                                        </td>
+                                                        <td style="text-align:center;">
+                                                            <button class="btn btn-secondary btn-block" onclick="editHD('<?php print $intID; ?>')"><i class="fa fa-pencil"></i> Editar</button>
+                                                            <button class="btn btn-secondary btn-block" onclick="deleteHD('<?php print $intID; ?>')"><i class="fa fa-trash"></i> Eliminar</button>
+                                                        </td>
+                                                    </tr>
+                                                <?php
                                             }
-                                            ?>
+                                        }
+                                        ?>
                                     </tbody>
                                 </table>
                                 <table class="table table-sm table-hover table-condensed">
@@ -1087,19 +1067,6 @@ class expediente_view
                                         <td style="text-align:left;"><button class="btn btn-danger" onclick="agregarHD()"><i class="fa fa-plus"></i> Agregar</button></td>
                                     </tr>
                                 </table>
-                            <?php
-                                        } else {
-                            ?>
-                                </tbody>
-                                </table>
-                                <table class="table table-sm table-hover table-condensed">
-                                    <tr>
-                                        <td style="text-align:left;"><button class="btn btn-danger" onclick="agregarHD()"><i class="fa fa-plus"></i> Agregar</button></td>
-                                    </tr>
-                                </table>
-                            <?php
-                                        }
-                            ?>
                             </div>
                         </div>
                     </div>
@@ -1123,54 +1090,54 @@ class expediente_view
                                         </thead>
                                         <tbody>
                                             <?php
-                                            if (isset($rTMP["value"]["PLATAFORMAS"])) {
+                                            if (isset($val["PLATAFORMAS"])) {
                                                 $intCountPl = 0;
-                                                reset($rTMP["value"]["PLATAFORMAS"]);
-                                                while ($rTMP4 = each($rTMP["value"]["PLATAFORMAS"])) {
+                                                foreach( $val["PLATAFORMAS"] as $key => $val4 ){
                                                     $intCountPl++;
-                                                    $intID = $rTMP4["key"];
-                                                    $intIDComponente = intval($rTMP4["value"]["ID_COMPONENTE"]);
-                                                    $strNombrePl = isset($rTMP4["value"]["NOMBRE_COMPONENTE"]) ? $rTMP4["value"]["NOMBRE_COMPONENTE"] : "N/A";
-                                                    $strUsuarioPl = isset($rTMP4["value"]["USUARIO"]) ? $rTMP4["value"]["USUARIO"] : "N/A";
-                                                    $strOperadorPl = isset($rTMP4["value"]["OPERADOR"]) ? $rTMP4["value"]["OPERADOR"] : "N/A";
-                                            ?>
-                                                    <tr id="trPlataforma_<?php print $intID; ?>">
-                                                        <td data-title="No." style="text-align:center; vertical-align:middle;">
-                                                            <h3><span class="badge badge-primary"><?php print $intCountPl; ?></span></h3>
-                                                            <input id="hdnIdPL_<?php print $intID; ?>" name="hdnIdPL_<?php print $intID; ?>" type="hidden" value="N">
-                                                        </td>
-                                                        <td data-title="Nombre" style="text-align:center; vertical-align:middle;">
-                                                            <div id="divShowPLNombre_<?php print $intID; ?>">
-                                                                <?php print $strNombrePl; ?>
-                                                            </div>
-                                                            <div id="divEditPLNombre_<?php print $intID; ?>" style="display:none;">
-                                                                <?php $this->drawSelectComponentePL($intID, $intIDComponente); ?>
-                                                            </div>
-                                                        </td>
-                                                        <td data-title="Usuario" style="text-align:center; vertical-align:middle;">
-                                                            <div id="divShowPLUsuario_<?php print $intID; ?>">
-                                                                <?php print $strUsuarioPl; ?>
-                                                            </div>
-                                                            <div id="divEditPLUsuario_<?php print $intID; ?>" style="display:none;">
-                                                                <input class="form-control" type="text" id="txtPLUsuario_<?php print $intID; ?>" name="txtPLUsuario_<?php print $intID; ?>" value="<?php print $strUsuarioPl; ?>">
-                                                            </div>
-                                                        </td>
-                                                        <td data-title="Operador" style="text-align:center; vertical-align:middle;">
-                                                            <div id="divShowPLOperador_<?php print $intID; ?>">
-                                                                <?php print $strOperadorPl; ?>
-                                                            </div>
-                                                            <div id="divEditPLOperador_<?php print $intID; ?>" style="display:none;">
-                                                                <input class="form-control" type="text" id="txtPLOperador_<?php print $intID; ?>" name="txtPLOperador_<?php print $intID; ?>" value="<?php print $strOperadorPl; ?>">
-                                                            </div>
-                                                        </td>
-                                                        <td style="text-align:center;">
-                                                            <button class="btn btn-secondary btn-block" onclick="editPL('<?php print $intID; ?>')"><i class="fa fa-pencil"></i> Editar</button>
-                                                            <button class="btn btn-secondary btn-block" onclick="deletePL('<?php print $intID; ?>')"><i class="fa fa-trash"></i> Eliminar</button>
-                                                        </td>
-                                                    </tr>
-                                                <?php
+                                                    $intID = $key;
+                                                    $intIDComponente = intval($val4["ID_COMPONENTE"]);
+                                                    $strNombrePl = isset($val4["NOMBRE_COMPONENTE"]) ? $val4["NOMBRE_COMPONENTE"] : "N/A";
+                                                    $strUsuarioPl = isset($val4["USUARIO"]) ? $val4["USUARIO"] : "N/A";
+                                                    $strOperadorPl = isset($val4["OPERADOR"]) ? $val4["OPERADOR"] : "N/A";
+                                                    ?>
+                                                        <tr id="trPlataforma_<?php print $intID; ?>">
+                                                            <td data-title="No." style="text-align:center; vertical-align:middle;">
+                                                                <h3><span class="badge badge-primary"><?php print $intCountPl; ?></span></h3>
+                                                                <input id="hdnIdPL_<?php print $intID; ?>" name="hdnIdPL_<?php print $intID; ?>" type="hidden" value="N">
+                                                            </td>
+                                                            <td data-title="Nombre" style="text-align:center; vertical-align:middle;">
+                                                                <div id="divShowPLNombre_<?php print $intID; ?>">
+                                                                    <?php print $strNombrePl; ?>
+                                                                </div>
+                                                                <div id="divEditPLNombre_<?php print $intID; ?>" style="display:none;">
+                                                                    <?php $this->drawSelectComponentePL($intID, $intIDComponente); ?>
+                                                                </div>
+                                                            </td>
+                                                            <td data-title="Usuario" style="text-align:center; vertical-align:middle;">
+                                                                <div id="divShowPLUsuario_<?php print $intID; ?>">
+                                                                    <?php print $strUsuarioPl; ?>
+                                                                </div>
+                                                                <div id="divEditPLUsuario_<?php print $intID; ?>" style="display:none;">
+                                                                    <input class="form-control" type="text" id="txtPLUsuario_<?php print $intID; ?>" name="txtPLUsuario_<?php print $intID; ?>" value="<?php print $strUsuarioPl; ?>">
+                                                                </div>
+                                                            </td>
+                                                            <td data-title="Operador" style="text-align:center; vertical-align:middle;">
+                                                                <div id="divShowPLOperador_<?php print $intID; ?>">
+                                                                    <?php print $strOperadorPl; ?>
+                                                                </div>
+                                                                <div id="divEditPLOperador_<?php print $intID; ?>" style="display:none;">
+                                                                    <input class="form-control" type="text" id="txtPLOperador_<?php print $intID; ?>" name="txtPLOperador_<?php print $intID; ?>" value="<?php print $strOperadorPl; ?>">
+                                                                </div>
+                                                            </td>
+                                                            <td style="text-align:center;">
+                                                                <button class="btn btn-secondary btn-block" onclick="editPL('<?php print $intID; ?>')"><i class="fa fa-pencil"></i> Editar</button>
+                                                                <button class="btn btn-secondary btn-block" onclick="deletePL('<?php print $intID; ?>')"><i class="fa fa-trash"></i> Eliminar</button>
+                                                            </td>
+                                                        </tr>
+                                                    <?php
                                                 }
-                                                ?>
+                                            }
+                                            ?>
                                         </tbody>
                                     </table>
                                     <table class="table table-sm table-hover table-condensed">
@@ -1178,20 +1145,7 @@ class expediente_view
                                             <td style="text-align:left;"><button class="btn btn-primary" onclick="agregarPL()"><i class="fa fa-plus"></i> Agregar</button></td>
                                         </tr>
                                     </table>
-                                <?php
-                                            } else {
-                                ?>
-                                    </tbody>
-                                    </table>
-                                    <table class="table table-sm table-hover table-condensed">
-                                        <tr>
-                                            <td style="text-align:left;"><button class="btn btn-primary" onclick="agregarPL()"><i class="fa fa-plus"></i> Agregar</button></td>
-                                        </tr>
-                                    </table>
                                 </div>
-                            <?php
-                                            }
-                            ?>
                             </div>
                         </div>
                     </div>
@@ -1215,55 +1169,55 @@ class expediente_view
                                         </thead>
                                         <tbody>
                                             <?php
-                                            if (isset($rTMP["value"]["DETALLE_SOFTWARE"])) {
+                                            if (isset($val["DETALLE_SOFTWARE"])) {
                                                 $intCountSW = 0;
-                                                reset($rTMP["value"]["DETALLE_SOFTWARE"]);
-                                                while ($rTMP3 = each($rTMP["value"]["DETALLE_SOFTWARE"])) {
+                                                foreach( $val["DETALLE_SOFTWARE"] as $key => $val5 ){
                                                     $intCountSW++;
-                                                    $intID = $rTMP3["key"];
-                                                    $intIDComponente = intval($rTMP3["value"]["ID_COMPONENTE"]);
-                                                    $strNombreSW = $rTMP3["value"]["NOMBRE_COMPONENTE"];
-                                                    $intPago = $rTMP3["value"]["PAGO"];
+                                                    $intID = $key;
+                                                    $intIDComponente = intval($val5["ID_COMPONENTE"]);
+                                                    $strNombreSW = $val5["NOMBRE_COMPONENTE"];
+                                                    $intPago = $val5["PAGO"];
                                                     $strPago = ($intPago == 1) ? "Si" : "No";
-                                                    $strVersion = $rTMP3["value"]["VERSION"];
-                                            ?>
-                                                    <tr id="trSoftware_<?php print $intID; ?>">
-                                                        <td data-title="No." style="text-align:center; vertical-align:middle;">
-                                                            <h3><span class="badge badge-info"><?php print $intCountSW; ?></span></h3>
-                                                            <input id="hdnIdSW_<?php print $intID; ?>" name="hdnIdSW_<?php print $intID; ?>" type="hidden" value="N">
-                                                        </td>
-                                                        <td data-title="Nombre" style="text-align:center; vertical-align:middle;">
-                                                            <div id="divShowSWNombre_<?php print $intID; ?>">
-                                                                <?php print $strNombreSW; ?>
-                                                            </div>
-                                                            <div id="divEditSWNombre_<?php print $intID; ?>" style="display:none;">
-                                                                <?php $this->drawSelectComponenteSW($intID, $intIDComponente); ?>
-                                                            </div>
-                                                        </td>
-                                                        <td data-title="Con licencia" style="text-align:center;vertical-align:middle; ">
-                                                            <div id="divShowSWPago_<?php print $intID; ?>">
-                                                                <?php print $strPago; ?>
-                                                            </div>
-                                                            <div id="divEditSWPago_<?php print $intID; ?>" style="display:none;">
-                                                                <?php $this->drawSelectSwPago($intID, $intPago); ?>
-                                                            </div>
-                                                        </td>
-                                                        <td data-title="Versión" style="text-align:center;vertical-align:middle;">
-                                                            <div id="divShowSWVersion_<?php print $intID; ?>">
-                                                                <?php print $strVersion; ?>
-                                                            </div>
-                                                            <div id="divEditSWVersion_<?php print $intID; ?>" style="display:none;">
-                                                                <input class="form-control" type="text" id="txtSWVersion_<?php print $intID; ?>" name="txtSWVersion_<?php print $intID; ?>" value="<?php print $strVersion; ?>">
-                                                            </div>
-                                                        </td>
-                                                        <td style="text-align:center; vertical-align:middle;">
-                                                            <button class="btn btn-secondary btn-block" onclick="editSW('<?php print $intID; ?>')"><i class="fa fa-pencil"></i> Editar</button>
-                                                            <button class="btn btn-secondary btn-block" onclick="deleteSW('<?php print $intID; ?>')"><i class="fa fa-trash"></i> Eliminar</button>
-                                                        </td>
-                                                    </tr>
-                                                <?php
+                                                    $strVersion = $val5["VERSION"];
+                                                    ?>
+                                                        <tr id="trSoftware_<?php print $intID; ?>">
+                                                            <td data-title="No." style="text-align:center; vertical-align:middle;">
+                                                                <h3><span class="badge badge-info"><?php print $intCountSW; ?></span></h3>
+                                                                <input id="hdnIdSW_<?php print $intID; ?>" name="hdnIdSW_<?php print $intID; ?>" type="hidden" value="N">
+                                                            </td>
+                                                            <td data-title="Nombre" style="text-align:center; vertical-align:middle;">
+                                                                <div id="divShowSWNombre_<?php print $intID; ?>">
+                                                                    <?php print $strNombreSW; ?>
+                                                                </div>
+                                                                <div id="divEditSWNombre_<?php print $intID; ?>" style="display:none;">
+                                                                    <?php $this->drawSelectComponenteSW($intID, $intIDComponente); ?>
+                                                                </div>
+                                                            </td>
+                                                            <td data-title="Con licencia" style="text-align:center;vertical-align:middle; ">
+                                                                <div id="divShowSWPago_<?php print $intID; ?>">
+                                                                    <?php print $strPago; ?>
+                                                                </div>
+                                                                <div id="divEditSWPago_<?php print $intID; ?>" style="display:none;">
+                                                                    <?php $this->drawSelectSwPago($intID, $intPago); ?>
+                                                                </div>
+                                                            </td>
+                                                            <td data-title="Versión" style="text-align:center;vertical-align:middle;">
+                                                                <div id="divShowSWVersion_<?php print $intID; ?>">
+                                                                    <?php print $strVersion; ?>
+                                                                </div>
+                                                                <div id="divEditSWVersion_<?php print $intID; ?>" style="display:none;">
+                                                                    <input class="form-control" type="text" id="txtSWVersion_<?php print $intID; ?>" name="txtSWVersion_<?php print $intID; ?>" value="<?php print $strVersion; ?>">
+                                                                </div>
+                                                            </td>
+                                                            <td style="text-align:center; vertical-align:middle;">
+                                                                <button class="btn btn-secondary btn-block" onclick="editSW('<?php print $intID; ?>')"><i class="fa fa-pencil"></i> Editar</button>
+                                                                <button class="btn btn-secondary btn-block" onclick="deleteSW('<?php print $intID; ?>')"><i class="fa fa-trash"></i> Eliminar</button>
+                                                            </td>
+                                                        </tr>
+                                                    <?php
                                                 }
-                                                ?>
+                                            }
+                                            ?>
                                         </tbody>
                                     </table>
                                     <table class="table table-sm table-hover table-condensed">
@@ -1274,20 +1228,7 @@ class expediente_view
                                         </tr>
                                     </table>
                                 </div>
-                            <?php
-                                            } else {
-                            ?>
-                                </tbody>
-                                </table>
-                                <table class="table table-sm table-hover table-condensed">
-                                    <tr>
-                                        <td style="text-align:left;"><button class="btn btn-info" onclick="agregarSW()">(+) Agregar</button></td>
-                                    </tr>
-                                </table>
                             </div>
-                        <?php
-                                            }
-                        ?>
                         <br><br><br>
                         <table class="table" id="tblComentarios">
                             <tr>
@@ -1297,24 +1238,21 @@ class expediente_view
                             </tr>
                             <tr>
                                 <?php
-                                if (isset($rTMP["value"]["COMENTARIO"])) {
-                                    reset($rTMP["value"]["COMENTARIO"]);
-                                    while ($rTMP6 = each($rTMP["value"]["COMENTARIO"])) {
-                                        $strComentario = $rTMP6["value"]["COMENTARIO"];
-                                ?>
-                                        <td><textarea class="form-control" name="txtComentarios"><?php print $strComentario; ?></textarea></td>
-                                    <?php
+                                if (isset($val["COMENTARIO"])) {
+                                    foreach( $val["COMENTARIO"] as $key => $val6 ){
+                                        $strComentario = $val6["value"]["COMENTARIO"];
+                                        ?>
+                                            <td><textarea class="form-control" name="txtComentarios"><?php print $strComentario; ?></textarea></td>
+                                        <?php
                                     }
                                 } else {
                                     ?>
                                     <td><textarea class="form-control" name="txtComentarios"></textarea></td>
-                                <?php
+                                    <?php
                                 }
                                 ?>
                             </tr>
                         </table>
-
-                        </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -1335,12 +1273,11 @@ class expediente_view
             ?>
             <select id="selectComponenteHD_<?php print $intId; ?>" name="selectComponenteHD_<?php print $intId; ?>" style="text-align: center;" class="form-control">
                 <?php
-                reset($arrComponenteHD);
-                while ($rTMP = each($arrComponenteHD)) {
-                    $strSelected = (($rTMP["key"] == $intHD)) ? 'selected' : '';
-                ?>
-                    <option value="<?php print $rTMP["key"]; ?>" <?php print $strSelected; ?>><?php print $rTMP["value"]["NOMBRE"]; ?></option>
-                <?php
+                foreach( $arrComponenteHD as $key => $val ){
+                    $strSelected = ( $key == $intHD ) ? 'selected' : '';
+                    ?>
+                        <option value="<?php print $key; ?>" <?php print $strSelected; ?>><?php print $val["NOMBRE"]; ?></option>
+                    <?php
                 }
                 ?>
             </select>
@@ -1353,12 +1290,11 @@ class expediente_view
         ?>
             <select id="selectComponenteSW_<?php print $intId; ?>" name="selectComponenteSW_<?php print $intId; ?>" style="text-align: center;" class="form-control">
                 <?php
-                reset($arrComponenteSW);
-                while ($rTMP = each($arrComponenteSW)) {
-                    $strSelected = (($rTMP["key"] == $intSW)) ? 'selected' : '';
-                ?>
-                    <option value="<?php print $rTMP["key"]; ?>" <?php print $strSelected; ?>><?php print $rTMP["value"]["NOMBRE"]; ?></option>
-                <?php
+                foreach( $arrComponenteSW as $key => $val ){
+                    $strSelected = ( $key == $intSW ) ? 'selected' : '';
+                    ?>
+                        <option value="<?php print $key; ?>" <?php print $strSelected; ?>><?php print $val["NOMBRE"]; ?></option>
+                    <?php
                 }
                 ?>
             </select>
@@ -1371,12 +1307,11 @@ class expediente_view
         ?>
             <select id="selectComponentePL_<?php print $intId; ?>" name="selectComponentePL_<?php print $intId; ?>" style="text-align: center;" class="form-control">
                 <?php
-                reset($arrComponentePL);
-                while ($rTMP = each($arrComponentePL)) {
-                    $strSelected = (($rTMP["key"] == $intPL)) ? 'selected' : '';
-                ?>
-                    <option value="<?php print $rTMP["key"]; ?>" <?php print $strSelected; ?>><?php print $rTMP["value"]["NOMBRE"]; ?></option>
-                <?php
+                foreach( $arrComponentePL as $key => $val ){
+                    $strSelected = ( $key == $intPL ) ? 'selected' : '';
+                    ?>
+                        <option value="<?php print $key; ?>" <?php print $strSelected; ?>><?php print $val["NOMBRE"]; ?></option>
+                    <?php
                 }
                 ?>
             </select>
@@ -1790,9 +1725,7 @@ class expediente_view
                         var $td = $("<td data-title='No.' style='text-align:center;'><b>" + intFilasHD + "<b><input class='form-control' type='hidden' id='hdnIdHW_" + max + "' name='hdnIdHW_" + max + "' value='A'></td>")
                         $tr.append($td);
 
-                        var $td = $("<td data-title='Nombre' style='text-align:center;'><select class='form-control' id='selectComponenteHD_" + max + "' name='selectComponenteHD_" + max + "' style='text-align: center;'><?php $arrComponenteHD = $this->objModel->getComponenteHD();
-                                                                                                                                                                                                                            reset($arrComponenteHD);
-                                                                                                                                                                                                                            while ($rTMP = each($arrComponenteHD)) { ?><option value='<?php print $rTMP["key"]; ?>'><?php print $rTMP["value"]["NOMBRE"]; ?></option><?php } ?></select></td>");
+                        var $td = $("<td data-title='Nombre' style='text-align:center;'><select class='form-control' id='selectComponenteHD_" + max + "' name='selectComponenteHD_" + max + "' style='text-align: center;'><?php $arrComponenteHD = $this->objModel->getComponenteHD();foreach( $arrComponenteHD as $key => $val ){ ?><option value='<?php print $key; ?>'><?php print $val["NOMBRE"]; ?></option><?php } ?></select></td>");
                         $tr.append($td);
 
                         var $td = $("<td data-title='Marca' style='text-align:center;'><input class='form-control' type='text' id='txtHDMarca_" + max + "' name='txtHDMarca_" + max + "'></td>")
@@ -1877,9 +1810,7 @@ class expediente_view
                         var $td = $("<td data-title='No.' style='text-align:center;'><b>" + intFilasPL + "<b><input class='form-control' type='hidden' id='hdnIdPL_" + max + "' name='hdnIdPL_" + max + "' value='A'></td>")
                         $tr.append($td);
 
-                        var $td = $("<td data-title='Nombre' style='text-align:center;'><select class='form-control' id='selectComponentePL_" + max + "' name='selectComponentePL_" + max + "' style='text-align: center;'><?php $arrComponentePL = $this->objModel->getComponentePL();
-                                                                                                                                                                                                                            reset($arrComponentePL);
-                                                                                                                                                                                                                            while ($rTMP = each($arrComponentePL)) { ?><option value='<?php print $rTMP["key"]; ?>'><?php print $rTMP["value"]["NOMBRE"]; ?></option><?php } ?></select></td>");
+                        var $td = $("<td data-title='Nombre' style='text-align:center;'><select class='form-control' id='selectComponentePL_" + max + "' name='selectComponentePL_" + max + "' style='text-align: center;'><?php $arrComponentePL = $this->objModel->getComponentePL(); foreach( $arrComponentePL as $key => $val ){ ?><option value='<?php print $key; ?>'><?php print $val["NOMBRE"]; ?></option><?php } ?></select></td>");
                         $tr.append($td);
 
                         var $td = $("<td data-title='Usuario' style='text-align:center;'><input class='form-control' type='text' id='txtPLUsuario_" + max + "' name='txtPLUsuario_" + max + "'></td>")
@@ -1953,9 +1884,7 @@ class expediente_view
                         var $td = $("<td data-title='No.' style='text-align:center;'><b>" + intFilasSW + "<b><input class='form-control' type='hidden' id='hdnIdSW_" + max + "' name='hdnIdSW_" + max + "' value='A'></td>")
                         $tr.append($td);
 
-                        var $td = $("<td data-title='Nombre' style='text-align:center;'><select class='form-control' id='selectComponenteSW_" + max + "' name='selectComponenteSW_" + max + "' style='text-align: center;'><?php $arrComponenteSW = $this->objModel->getComponenteSW();
-                                                                                                                                                                                                                            reset($arrComponenteSW);
-                                                                                                                                                                                                                            while ($rTMP = each($arrComponenteSW)) { ?><option value='<?php print $rTMP["key"]; ?>'><?php print $rTMP["value"]["NOMBRE"]; ?></option><?php } ?></select></td>");
+                        var $td = $("<td data-title='Nombre' style='text-align:center;'><select class='form-control' id='selectComponenteSW_" + max + "' name='selectComponenteSW_" + max + "' style='text-align: center;'><?php $arrComponenteSW = $this->objModel->getComponenteSW(); foreach( $arrComponenteSW as $key => $val ){ ?><option value='<?php print $key; ?>'><?php print $val["NOMBRE"]; ?></option><?php } ?></select></td>");
                         $tr.append($td);
 
                         var $td = $("<td data-title='Pago' style='text-align:center;'><select class='form-control' id='selectPago_" + max + "' name='selectPago_" + max + "' style='text-align: center;'><option value='0'>No</option><option value='1'>Si</option></select></td>");
@@ -1995,17 +1924,16 @@ class expediente_view
                         });
 
                         if (boolError == false) {
-                            var objSerialized = $("#tblDatosPersonales, #tblHardware, #tblSoftware, #tblComentarios, #tblDatosEquipo, #tblPlataforma").find("select, input, textarea").serialize();
                             $.ajax({
                                 url: "expediente.php",
-                                data: objSerialized,
+                                data:  $("#tblDatosPersonales, #tblHardware, #tblSoftware, #tblComentarios, #tblDatosEquipo, #tblPlataforma").find("select, input").serialize() + "&process=Y",
                                 type: "POST",
                                 beforeSend: function() {
                                     $("#divShowLoadingGeneralBig").show();
                                 },
                                 success: function(data) {
                                     $("#divShowLoadingGeneralBig").hide();
-                                    location.href = "expediente.php";
+                                    getExpediente();
                                 }
                             });
                         } else {
