@@ -1,5 +1,6 @@
 <?php
 require_once("core/core.php");
+require_once("tcpdf/tcpdf.php");
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 session_start();
@@ -177,7 +178,6 @@ class expediente_controller
                 $strHTML = $this->objView->drawExportReport($arrColaborador);
                 //print $strHTML;
                 ob_start();
-                require_once("tcpdf/tcpdf.php");
                 $pdf = new TCPDF("P", "mm", "LETTER", false, 'UTF-8', false);
                 $pdf->AddPage('P');
                 $pdf->SetFont('helvetica', '', 7);

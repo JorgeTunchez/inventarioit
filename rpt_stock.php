@@ -95,9 +95,9 @@ class rptstock_controller
 
             $strTipoExportar = isset($_POST["TipoExport"]) ? $_POST["TipoExport"] : '';
             $intComponente = isset($_POST["intComponente"]) ? intval($_POST["intComponente"]) : 0;
-            $intAreas = isset($_POST["selectArea"]) ? $_POST["selectArea"] : 0;
+            $arrAreas = isset($_POST["selectArea"]) ? $_POST["selectArea"] : 0;
             $strNombreArchivo = "ReporteIT_Stock_" . date("Y") . "_" . date("m") . "_" . date("d");
-            $strHTML = $this->objView->drawExportReport($intComponente, $intAreas);
+            $strHTML = $this->objView->drawExportReport($intComponente, $arrAreas);
 
             if ($strTipoExportar == 'PDF') {
                 ob_start();
@@ -181,28 +181,28 @@ class rptstock_model
         }
     }
 
-    public function getEstadisticas($intComponente = 0, $intAreas = 0, $boolExport = false)
+    public function getEstadisticas($intComponente = 0, $arrAreas, $boolExport = false)
     {
 
         if ($intComponente > 0) {
 
             $strAndAreas = "";
             if ($boolExport) {
-                $strAndAreas = "AND area.id IN({$intAreas})";
+                $strAndAreas = "AND area.id IN({$arrAreas})";
             } else {
-                if (count($intAreas) > 0) {
-                    $intCountAreas = count($intAreas) - 1;
-                    if (count($intAreas) >= 1) {
-                        for ($i = 0; $i < count($intAreas); $i++) {
+                if (count($arrAreas) > 0) {
+                    $intCountAreas = count($arrAreas) - 1;
+                    if (count($arrAreas) >= 1) {
+                        for ($i = 0; $i < count($arrAreas); $i++) {
                             if ($i == $intCountAreas) {
-                                $strAndAreas = $strAndAreas . $intAreas[$i];
+                                $strAndAreas = $strAndAreas . $arrAreas[$i];
                             } else {
-                                $strAndAreas = $strAndAreas . $intAreas[$i] . ",";
+                                $strAndAreas = $strAndAreas . $arrAreas[$i] . ",";
                             }
                         }
                     }
                     $strAndAreas = "AND area.id IN({$strAndAreas})";
-                } elseif ($intAreas == 0) {
+                } elseif ($arrAreas == 0) {
                     $strAndAreas = "";
                 } else {
                     $strAndAreas = "";
@@ -255,11 +255,10 @@ class rptstock_view
         </label>
         <select id="selectArea" name="selectArea[]" style="text-align:center; width:100%;" class="form-control selectpicker" data-selected-text-format="count" data-live-search="true" data-actions-box="true" multiple>
             <?php
-            reset($arrArea);
-            while ($rTMP = each($arrArea)) {
-            ?>
-                <option value="<?php print $rTMP["key"]; ?>"><?php print $rTMP["value"]["NOMBRE"]; ?></option>
-            <?php
+            foreach($arrArea as $key => $val) {
+                ?>
+                    <option value="<?php print $key; ?>"><?php print $val["NOMBRE"]; ?></option>
+                <?php
             }
             ?>
         </select>
@@ -275,10 +274,9 @@ class rptstock_view
         </label>
         <select id="selectComponente" name="selectComponente" style="text-align:center; width:100%;" class="form-control select2">
             <?php
-            reset($arrComponenteHD);
-            while ($rTMP = each($arrComponenteHD)) {
+            foreach($arrComponenteHD as $key => $val) {
             ?>
-                <option value="<?php print $rTMP["key"]; ?>"><?php print $rTMP["value"]["NOMBRE"]; ?></option>
+                <option value="<?php print $key; ?>"><?php print $val["NOMBRE"]; ?></option>
             <?php
             }
             ?>
@@ -304,23 +302,22 @@ class rptstock_view
                     <?php
                     $intSumaModal = 0;
                     $intCount = 0;
-                    reset($arrDetalle);
-                    while ($rTMP = each($arrDetalle)) {
+                    foreach($arrDetalle as $key => $val) {
                         $intCount++;
-                        $strCIF = $rTMP["value"]["CIF"];
-                        $strNombres = $rTMP["value"]["NOMBRES"];
-                        $intConteo = intval($rTMP["value"]["CONTEO"]);
-                        $strPuesto = $rTMP["value"]["PUESTO"];
+                        $strCIF = $val["CIF"];
+                        $strNombres = $val["NOMBRES"];
+                        $intConteo = intval($val["CONTEO"]);
+                        $strPuesto = $val["PUESTO"];
                         $intSumaModal = $intSumaModal + $intConteo;
-                    ?>
-                        <tr>
-                            <td style="text-align:center;"><?php print $intCount; ?></td>
-                            <td style="text-align:center;"><?php print $strCIF; ?></td>
-                            <td style="text-align:center;"><?php print $strNombres; ?></td>
-                            <td style="text-align:center;"><?php print $strPuesto; ?></td>
-                            <td style="text-align:center;"><?php print $intConteo; ?></td>
-                        </tr>
-                    <?php
+                        ?>
+                            <tr>
+                                <td style="text-align:center;"><?php print $intCount; ?></td>
+                                <td style="text-align:center;"><?php print $strCIF; ?></td>
+                                <td style="text-align:center;"><?php print $strNombres; ?></td>
+                                <td style="text-align:center;"><?php print $strPuesto; ?></td>
+                                <td style="text-align:center;"><?php print $intConteo; ?></td>
+                            </tr>
+                        <?php
                     }
                     ?>
                     <tr>
@@ -359,10 +356,10 @@ class rptstock_view
         <?php
     }
 
-    public function drawExportReport($intComponente = 0, $intAreas = 0)
+    public function drawExportReport($intComponente = 0, $arrAreas)
     {
         $strHTML = '';
-        $arrEstadisticas = $this->objModel->getEstadisticas($intComponente, $intAreas, true);
+        $arrEstadisticas = $this->objModel->getEstadisticas($intComponente, $arrAreas, true);
         $strComponenteEvaluado = getNombreComponente($intComponente);
         if (count($arrEstadisticas) > 0) {
             $strHTML .= '<div class="row">';
@@ -388,13 +385,12 @@ class rptstock_view
             $strHTML .= '<table class="table table-sm table-hover table-borderless table-condensed">';
             $intSuma = 0;
             $intCount = 0;
-            reset($arrEstadisticas);
-            while ($rTMP = each($arrEstadisticas)) {
+            foreach($arrEstadisticas as $key => $val) {
                 $intCount++;
-                $intArea = intval($rTMP["key"]);
-                $intComponente = intval($rTMP["value"]["COMPONENTE"]);
-                $strNombreArea = utf8_decode($rTMP["value"]["NOMBREAREA"]);
-                $intConteo = intval($rTMP["value"]["CONTEO"]);
+                $intArea = intval($key);
+                $intComponente = intval($val["COMPONENTE"]);
+                $strNombreArea = utf8_decode($val["NOMBREAREA"]);
+                $intConteo = intval($val["CONTEO"]);
                 $intSuma = $intSuma + $intConteo;
                 $arrDetalle = $this->objModel->getDetalle($intArea, $intComponente);
                 $strHTML .= '<tr>';
@@ -411,13 +407,12 @@ class rptstock_view
                 $strHTML .= '<td width="22.5%" style="text-align:center;"><b>Conteo</b></td>';
                 $strHTML .= '</tr>';
                 $intCountDetail = 0;
-                reset($arrDetalle);
-                while ($rTMP2 = each($arrDetalle)) {
+                foreach($arrDetalle as $key => $val2) {
                     $intCountDetail++;
-                    $strCIF = $rTMP2["value"]["CIF"];
-                    $strColaborador = utf8_decode($rTMP2["value"]["NOMBRES"]);
-                    $strPuesto = utf8_decode($rTMP2["value"]["PUESTO"]);
-                    $intConteoDet = $rTMP2["value"]["CONTEO"];
+                    $strCIF = $val2["CIF"];
+                    $strColaborador = utf8_decode($val2["NOMBRES"]);
+                    $strPuesto = utf8_decode($val2["PUESTO"]);
+                    $intConteoDet = $val2["CONTEO"];
                     $strHTML .= '<tr>';
                     $strHTML .= '<td style="text-align:center;">' . $intCountDetail . '</td>';
                     $strHTML .= '<td style="text-align:center;">' . $strCIF . '</td>';
@@ -476,13 +471,12 @@ class rptstock_view
                                     <?php
                                     $intSuma = 0;
                                     $intCount = 0;
-                                    reset($arrEstadisticas);
-                                    while ($rTMP = each($arrEstadisticas)) {
+                                    foreach($arrEstadisticas as $key => $val) {
                                         $intCount++;
-                                        $intArea = intval($rTMP["key"]);
-                                        $intComponente = intval($rTMP["value"]["COMPONENTE"]);
-                                        $strNombreArea = $rTMP["value"]["NOMBREAREA"];
-                                        $intConteo = intval($rTMP["value"]["CONTEO"]);
+                                        $intArea = intval($key);
+                                        $intComponente = intval($val["COMPONENTE"]);
+                                        $strNombreArea = $val["NOMBREAREA"];
+                                        $intConteo = intval($val["CONTEO"]);
                                         $intSuma = $intSuma + $intConteo;
                                     ?>
                                         <tr>
