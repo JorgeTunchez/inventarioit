@@ -206,49 +206,6 @@ function upper_tildes($strString, $boolProper = false)
     return $strString;
 }
 
-function getFilterQuery($strFieldsSearch, $strFilterText, $boolAddAnd = true, $boolSepararPorEspacios = true)
-{
-
-    $strSearchString = "";
-    $strFilterText = upper_tildes(trim($strFilterText));
-    $strFilterText = str_replace(array("Á", "É", "Í", "Ó", "Ú"), array("A", "E", "I", "O", "U"), $strFilterText);
-    $mixedFieldsSearch = explode(",", $strFieldsSearch);
-
-    if (count($mixedFieldsSearch) > 1) {
-
-        if ($boolSepararPorEspacios) {
-            $arrFilterText = explode(" ", $strFilterText);
-        } else {
-            $arrFilterText[] = $strFilterText;
-        }
-
-        while ($arrTMP = each($arrFilterText)) {
-
-            $strSearchString .= (empty($strSearchString)) ? "" : " AND ";
-            $strSearchString .= " ( ";
-
-            $intContador = 0;
-            reset($mixedFieldsSearch);
-            while ($arrFields = each($mixedFieldsSearch)) {
-                $strWord = db_escape($arrTMP["value"]);
-                $intContador++;
-                if ($intContador > 1) $strSearchString .= " OR ";
-                $strSearchString .= " UPPER(replace({$arrFields["value"]}, 'áéíóúÁÉÍÓÚ', 'aeiouAEIOU')) LIKE '%{$strWord}%' ";
-            }
-
-            $strSearchString .= " ) ";
-        }
-    } else {
-        $strSearchString .= " UPPER(replace({$strFieldsSearch}, 'áéíóúÁÉÍÓÚ', 'aeiouAEIOU')) LIKE '%{$strFilterText}%' ";
-    }
-
-    if ($boolAddAnd) {
-        $strSearchString = " AND " . $strSearchString;
-    }
-
-    return $strSearchString;
-}
-
 function draMenu($strNamePage = "", $intMenu = 0)
 {
 ?>
