@@ -202,8 +202,7 @@ class expediente_model
                                 colaborador.cif,
                                 CONCAT(colaborador.nombres,' ', colaborador.apellidos) nombrecompleto
                            FROM colaborador
-                                INNER JOIN area
-                                        ON colaborador.area = area.id
+                                INNER JOIN area ON colaborador.area = area.id
                           WHERE area.id = {$intArea} 
                           ORDER BY colaborador.nombres";
             $result = executeQuery($strQuery);
