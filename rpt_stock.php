@@ -89,27 +89,88 @@ class rptstock_controller
     //Funcion que permite exportar a formato PDF o EXCEL el contenido del reporte
     public function exportPDF()
     {
-        if (isset($_POST['GenerarReporte'])) {
-            header('Content-Type: text/html; charset=utf-8');
-            require_once("tcpdf/tcpdf.php");
+        if (isset($_POST['generarReporte'])) {
 
-            $strTipoExportar = isset($_POST["TipoExport"]) ? $_POST["TipoExport"] : '';
+            // Directorio donde se guardan los reportes
+            $directorio = 'reportes/';
+
+            // Eliminar los archivos existentes en el directorio
+            foreach (glob($directorio . '*') as $archivo) {
+                if (is_file($archivo)) {
+                    unlink($archivo); // Eliminar el archivo
+                }
+            }
+
             $intComponente = isset($_POST["intComponente"]) ? intval($_POST["intComponente"]) : 0;
             $arrAreas = isset($_POST["selectArea"]) ? $_POST["selectArea"] : 0;
-            $strNombreArchivo = "ReporteIT_Stock_" . date("Y") . "_" . date("m") . "_" . date("d");
-            $strHTML = $this->objView->drawExportReport($intComponente, $arrAreas);
 
-            if ($strTipoExportar == 'PDF') {
-                ob_start();
-                $pdf = new TCPDF("P", "mm", "LETTER", false, 'UTF-8', false);
-                $pdf->AddPage('P');
-                $pdf->SetFont('helvetica', '', 7);
-                $pdf->writeHTML($strHTML, true, false, true, false, "C");
-                ob_end_clean();
-                $pdf->Output($strNombreArchivo . '.pdf', 'D');
+            $arrEstadisticas = $this->objModel->getEstadisticas($intComponente, $arrAreas, true);
+            $strComponenteEvaluado = getNombreComponente($intComponente);
+            $hoy = date("d-m-Y");
+            $hoyFormateada = formatoFecha($hoy);
+
+            if ( count($arrEstadisticas) > 0 ) {
+                
+                $pdf = new FPDF();
+                $pdf->AddPage(); // Agregar una página
+                $pdf->SetFont('Arial', 'B', 12); // Establecer fuente, estilo y tamaño
+
+                // Texto Introduccion
+                $pdf->Cell(0, 10, utf8_decode("Reporte Stock Componente"), 0, 1, 'L');
+                $pdf->Ln(0); // Espacio entre el texto y la tabla
+
+                $pdf->SetFont('Arial', 'B', 10); 
+                $pdf->Cell(0, 8, utf8_decode("Componente: ".$strComponenteEvaluado), 0, 1, 'L');
+                $pdf->Ln(0); // Espacio entre el texto y la tabla
+
+                $pdf->SetFont('Arial', 'B', 10); 
+                $pdf->Cell(0, 8, utf8_decode("Fecha: ".$hoyFormateada), 0, 1, 'L');
+                $pdf->Ln(5); // Espacio entre el texto y la tabla
+
+                // Encabezado de la tabla
+                $pdf->SetFont('Arial', 'B', 10); 
+                $pdf->Cell(50, 10, utf8_decode("Area/Agencia"), 1, 0, 'C');
+                $pdf->Cell(30, 10, utf8_decode("Items"), 1, 0, 'C');
+                $pdf->Ln(10); 
+
+                $pdf->SetFont('Arial', '', 8); 
+                $sumaItems = 0;
+                foreach( $arrEstadisticas as $key => $val){
+                    $area = $val["NOMBREAREA"];
+                    $conteo = $val["CONTEO"];
+                    $sumaItems += $conteo;
+                    $pdf->Cell(50, 10, $area, 1, 0, 'C');
+                    $pdf->Cell(30, 10, $conteo, 1, 0, 'C');
+                    $pdf->Ln(10); 
+                }
+
+                $pdf->SetFont('Arial', 'B', 10); 
+                $pdf->Cell(50, 10, 'Total Items..', 1, 0, 'C');
+                $pdf->Cell(30, 10, $sumaItems, 1, 0, 'C');
+                $pdf->Ln(10);
+
+
+                // Salida PDF
+                $nombreArchivo = 'ReporteIT_Stock_' . time() . '.pdf';
+                $rutaArchivo = 'reportes/'.$nombreArchivo;
+                $pdf->Output('F', $rutaArchivo); // Guardar el PDF en el servidor
+                
+                // Responder con el estado y la ruta del archivo
+                echo json_encode([
+                    'ESTADO' => '1',
+                    'URL' => 'reportes/' . $nombreArchivo
+                ], JSON_UNESCAPED_SLASHES);
+
+            }else{
+                echo json_encode([
+                    'ESTADO' => '0'
+                ]);
             }
 
             exit();
+
+            
+
         }
     }
 }
@@ -181,33 +242,14 @@ class rptstock_model
         }
     }
 
-    public function getEstadisticas($intComponente = 0, $arrAreas, $boolExport = false)
+    public function getEstadisticas($intComponente = 0, $arrAreas = array(), $boolExport = false)
     {
 
         if ($intComponente > 0) {
 
             $strAndAreas = "";
-            if ($boolExport) {
-                $strAndAreas = "AND area.id IN({$arrAreas})";
-            } else {
-                if (count($arrAreas) > 0) {
-                    $intCountAreas = count($arrAreas) - 1;
-                    if (count($arrAreas) >= 1) {
-                        for ($i = 0; $i < count($arrAreas); $i++) {
-                            if ($i == $intCountAreas) {
-                                $strAndAreas = $strAndAreas . $arrAreas[$i];
-                            } else {
-                                $strAndAreas = $strAndAreas . $arrAreas[$i] . ",";
-                            }
-                        }
-                    }
-                    $strAndAreas = "AND area.id IN({$strAndAreas})";
-                } elseif ($arrAreas == 0) {
-                    $strAndAreas = "";
-                } else {
-                    $strAndAreas = "";
-                }
-            }
+            $strAreas = implode(",", $arrAreas);
+            $strAndAreas = "AND area.id IN ($strAreas)";
 
             $arrEstadisticas = array();
             $strQuery = "SELECT area.id,
@@ -356,99 +398,9 @@ class rptstock_view
         <?php
     }
 
-    public function drawExportReport($intComponente = 0, $arrAreas)
+    public function drawContentReport($intComponente = 0, $arrArea = array())
     {
-        $strHTML = '';
-        $arrEstadisticas = $this->objModel->getEstadisticas($intComponente, $arrAreas, true);
-        $strComponenteEvaluado = getNombreComponente($intComponente);
-        if (count($arrEstadisticas) > 0) {
-            $strHTML .= '<div class="row">';
-            $strHTML .= '<table class="table table-sm table-hover table-borderless table-condensed">';
-            $strHTML .= '<tr>';
-            $strHTML .= '<td colspan="5"></td>';
-            $strHTML .= '</tr>';
-            $strHTML .= '<tr>';
-            $strHTML .= '<td colspan="5" style="text-align:left; background-color:#2242d4; color:#ffffff;"><h1>Reporte stock componente</h1></td>';
-            $strHTML .= '</tr>';
-            $strHTML .= '<tr>';
-            $strHTML .= '<td colspan="5"></td>';
-            $strHTML .= '</tr>';
-            $strHTML .= '<tr>';
-            $strHTML .= '<td colspan="5" style="text-align:left;"><b>Componente:</b> ' . $strComponenteEvaluado . '</td>';
-            $strHTML .= '</tr>';
-            $hoy = date("d-m-Y");
-            $strHTML .= '<tr>';
-            $strHTML .= '<td colspan="5" style="text-align:left;"><b>Fecha Impresion</b>: ' . $hoy . '</td>';
-            $strHTML .= '</tr>';
-            $strHTML .= '</table>';
-            $strHTML .= '</div>';
-            $strHTML .= '<table class="table table-sm table-hover table-borderless table-condensed">';
-            $intSuma = 0;
-            $intCount = 0;
-            foreach($arrEstadisticas as $key => $val) {
-                $intCount++;
-                $intArea = intval($key);
-                $intComponente = intval($val["COMPONENTE"]);
-                $strNombreArea = utf8_decode($val["NOMBREAREA"]);
-                $intConteo = intval($val["CONTEO"]);
-                $intSuma = $intSuma + $intConteo;
-                $arrDetalle = $this->objModel->getDetalle($intArea, $intComponente);
-                $strHTML .= '<tr>';
-                $strHTML .= '<td style="text-align:left; background-color: #7088f6; color:white;" colspan="5"><b>' . $strNombreArea . ' (' . $intConteo . ')</b></td>';
-                $strHTML .= '</tr>';
-                $strHTML .= '<tr>';
-                $strHTML .= '<td colspan="5"><br></td>';
-                $strHTML .= '</tr>';
-                $strHTML .= '<tr>';
-                $strHTML .= '<td width="10%" style="text-align:center;"><b>No.</b></td>';
-                $strHTML .= '<td width="22.5%" style="text-align:center;"><b>No. CIF</b></td>';
-                $strHTML .= '<td width="22.5%" style="text-align:center;"><b>Colaborador</b></td>';
-                $strHTML .= '<td width="22.5%" style="text-align:center;"><b>Puesto</b></td>';
-                $strHTML .= '<td width="22.5%" style="text-align:center;"><b>Conteo</b></td>';
-                $strHTML .= '</tr>';
-                $intCountDetail = 0;
-                foreach($arrDetalle as $key => $val2) {
-                    $intCountDetail++;
-                    $strCIF = $val2["CIF"];
-                    $strColaborador = utf8_decode($val2["NOMBRES"]);
-                    $strPuesto = utf8_decode($val2["PUESTO"]);
-                    $intConteoDet = $val2["CONTEO"];
-                    $strHTML .= '<tr>';
-                    $strHTML .= '<td style="text-align:center;">' . $intCountDetail . '</td>';
-                    $strHTML .= '<td style="text-align:center;">' . $strCIF . '</td>';
-                    $strHTML .= '<td style="text-align:center;">' . $strColaborador . '</td>';
-                    $strHTML .= '<td style="text-align:center;">' . $strPuesto . '</td>';
-                    $strHTML .= '<td style="text-align:center;">' . $intConteoDet . '</td>';
-                    $strHTML .= '</tr>';
-                }
-                $strHTML .= '<tr>';
-                $strHTML .= '<td colspan="5"><br></td>';
-                $strHTML .= '</tr>';
-            }
-            $strHTML .= '<tr>';
-            $strHTML .= '<td></td>';
-            $strHTML .= '<td></td>';
-            $strHTML .= '<td></td>';
-            $strHTML .= '<td style="text-align:center;"><b>Total</b></td>';
-            $strHTML .= '<td style="text-align:center;"><b>' . $intSuma . '</b></td>';
-            $strHTML .= '</tr>';
-            $strHTML .= '</table>';
-        } else {
-            $strHTML .= '<div class="col-sm-12 col-md-12 col-lg-12">';
-            $strHTML .= '<div class="card card-primary">';
-            $strHTML .= '<div class="card-body">';
-            $strHTML .= '<h3>No se encontró ningún resultado.</h3>';
-            $strHTML .= '</div>';
-            $strHTML .= '</div>';
-            $strHTML .= '</div>';
-        }
-
-        return  $strHTML;
-    }
-
-    public function drawContentReport($intComponente = 0, $intAreas = 0)
-    {
-        $arrEstadisticas = $this->objModel->getEstadisticas($intComponente, $intAreas);
+        $arrEstadisticas = $this->objModel->getEstadisticas($intComponente, $arrArea);
         if (count($arrEstadisticas) > 0) {
         ?>
             <script>
@@ -873,37 +825,36 @@ class rptstock_view
                     }
                 }
 
-                /*
-                Funcion que permite enviar en POST parametros que no pertenecen a un objeto
-                del arbol DOM y en forma de AJAX se procesan para poder exportar el reporte
-                */
-
-                function addHidden(theForm, key, value) {
-                    // Create a hidden input element, and append it to the form:
-                    var input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = key;
-                    'name-as-seen-at-the-server';
-                    input.value = value;
-                    theForm.appendChild(input);
-                }
 
                 //Permite enviar la peticion para poder exportar el reporte en PDF o EXCEL
                 function fntExportarData(strTipoExportar) {
-                    var intArea = $("#selectArea").val();
-                    var intComponente = $("#selectComponente").val();
+
+                    intArea = $("#selectArea").val();
+                    intComponente = $("#selectComponente").val();
                     var selectArea = [];
                     $.each($("#selectArea option:selected"), function() {
                         selectArea.push($(this).val());
                     });
 
-                    var objForm = document.getElementById("frmFiltros");
-                    objForm.target = "_self";
-                    addHidden(objForm, 'GenerarReporte', true);
-                    addHidden(objForm, 'selectArea', selectArea);
-                    addHidden(objForm, 'TipoExport', strTipoExportar);
-                    addHidden(objForm, 'intComponente', intComponente);
-                    objForm.submit();
+                    $.ajax({
+                        url: "rpt_stock.php",
+                        data: {
+                            generarReporte: true,
+                            intComponente: intComponente,
+                            selectArea: selectArea
+                        },
+                        type: "post",
+                        dataType: "json",
+                        success: function(respuesta) {
+                            if( respuesta.ESTADO == '0'){
+                                alertError("No se logro generar el reporte.");
+                            }else {
+                                // Redirigir al archivo PDF generado
+                                window.open(respuesta.URL, '_blank');
+                            }
+                        }
+                    });
+
                 }
 
                 $(document).ready(function() {});
